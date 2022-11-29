@@ -12,16 +12,22 @@ import org.edu.sagesse.base.core.domain.dto.dict.SysDictPutDto;
 import org.edu.sagesse.base.core.domain.dto.dict.SysDictQueryDto;
 import org.edu.sagesse.base.core.domain.entity.SysDict;
 import org.edu.sagesse.base.core.service.SysDictService;
+import org.edu.sagesse.common.support.exception.CoreException;
 import org.edu.sagesse.common.support.helper.Builder;
 import org.edu.sagesse.common.support.logger.SaLogger;
 import org.edu.sagesse.common.support.logger.SaLoggerFactory;
+import org.edu.sagesse.common.support.rest.CoreRestEnum;
 import org.edu.sagesse.common.util.CollectionUtil;
 import org.edu.sagesse.common.util.StringUtil;
+import org.edu.sagesse.data.base.domain.entity.AbstractDataEntity;
+import org.edu.sagesse.data.base.support.annotation.crud.PageQuery;
 import org.edu.sagesse.data.base.support.enums.DataStatus;
+import org.edu.sagesse.data.base.util.PageUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -120,9 +126,12 @@ public class SysDictServiceImpl implements SysDictService {
      * @since 2022-11-29 16:24:43
      */
     @Override
+    @PageQuery
     public PageInfo<SysDictVo> page(SysDictPageDto pageDto) {
         SysDict dict = SysDictConvert.sysDictPageDtoToEntity(pageDto);
-        return null;
+        List<SysDict> list = sysDictDao.list(dict);
+        List<SysDictVo> vos = list.stream().map(SysDictConvert::entityToSysDictVo).collect(Collectors.toList());
+        return PageUtil.toPageInfo(vos, new PageInfo<>(list));
     }
 
     /**
@@ -135,7 +144,9 @@ public class SysDictServiceImpl implements SysDictService {
      */
     @Override
     public List<SysDictVo> list(SysDictQueryDto queryDto) {
-        return null;
+        SysDict dict = SysDictConvert.sysDictQueryDtoToEntity(queryDto);
+        List<SysDict> list = sysDictDao.list(dict);
+        return list.stream().map(SysDictConvert::entityToSysDictVo).collect(Collectors.toList());
     }
 
     /**
@@ -148,7 +159,10 @@ public class SysDictServiceImpl implements SysDictService {
      */
     @Override
     public boolean create(SysDictCreateDto createDto) {
-        return false;
+        SysDict dict = SysDictConvert.sysDictCreateDtoToEntity(createDto);
+        checkBeforeCreate(dict);
+        int nums = sysDictDao.create(dict);
+        return nums == 1;
     }
 
     /**
@@ -161,7 +175,12 @@ public class SysDictServiceImpl implements SysDictService {
      */
     @Override
     public boolean create(List<SysDictCreateDto> createDtoList) {
-        return false;
+        List<SysDict> dictList = createDtoList.stream()
+                .map(SysDictConvert::sysDictCreateDtoToEntity)
+                .peek(this::checkBeforeCreate)
+                .collect(Collectors.toList());
+        int nums = sysDictDao.createBatch(dictList);
+        return nums == dictList.size();
     }
 
     /**
@@ -174,7 +193,10 @@ public class SysDictServiceImpl implements SysDictService {
      */
     @Override
     public boolean put(SysDictPutDto putDto) {
-        return false;
+        SysDict dict = SysDictConvert.sysDictPutDtoToEntity(putDto);
+        checkBeforePut(dict);
+        int count = sysDictDao.update(dict);
+        return count == 1;
     }
 
     /**
@@ -189,5 +211,42 @@ public class SysDictServiceImpl implements SysDictService {
     @Override
     public boolean remove(Long id, boolean isLogicRemove) {
         return false;
+    }
+
+    private SysDict uniqueParamBuild(SysDict sysDict) {
+        return Builder.builder(SysDict::new)
+                .enhanceWith(SysDict::setCategoryCode, sysDict::getCategoryCode)
+                .enhanceWith(SysDict::setDictValue, sysDict::getDictValue)
+                .enhanceWith(SysDict::setDataStatus, DataStatus.ENABLE::value)
+                .build();
+    }
+
+    /**
+     * <p>创建之前进行校验</p>
+     *
+     * @param sysDict 数据字典
+     * @author guocq
+     * @date 2022/11/29 18:29
+     */
+    private void checkBeforeCreate(SysDict sysDict) {
+        SysDict param = uniqueParamBuild(sysDict);
+        if (AbstractDataEntity.isNotEmpty(sysDictDao.findByParam(param))) {
+            LOGGER.error("字典数据{}已存在", sysDict);
+            throw new CoreException(CoreRestEnum.DATA_EXIST);
+        }
+    }
+
+    private void checkBeforePut(SysDict sysDict) {
+        Long id = sysDict.getId();
+        if (AbstractDataEntity.isNotEmpty(sysDictDao.findById(id))) {
+            LOGGER.error("id={}的字典数据不存在", id);
+            throw new CoreException(CoreRestEnum.DATA_NOT_EXIST);
+        }
+        SysDict param = uniqueParamBuild(sysDict);
+        long count = sysDictDao.list(param).stream().filter(dict -> !Objects.equals(dict.getId(), id)).count();
+        if (count > 0) {
+            LOGGER.error("{}的字典数据已存在，不能重复", param);
+            throw new CoreException(CoreRestEnum.DATA_EXIST);
+        }
     }
 }
