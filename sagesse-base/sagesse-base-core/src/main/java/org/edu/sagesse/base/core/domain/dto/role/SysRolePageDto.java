@@ -1,27 +1,27 @@
-package org.edu.sagesse.base.core.domain.entity;
+package org.edu.sagesse.base.core.domain.dto.role;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.edu.sagesse.common.support.helper.Builder;
-import org.edu.sagesse.data.base.domain.entity.AbstractDataEntity;
+import org.edu.sagesse.data.base.domain.dto.AbstractPageDto;
 
 import java.util.StringJoiner;
 
 /**
- * 系统角色表(SysRole)实体类
+ * 系统角色表(SysRole)分页参数
  *
  * @author guocq
- * @since 2022-11-29 14:28:09
+ * @since 2022-11-29 17:56:35
  */
-@ApiModel(value = "系统角色表实体类")
+@ApiModel(value = "系统角色表分页参数")
 @Setter
 @Getter
-public class SysRole extends AbstractDataEntity {
-    private static final long serialVersionUID = 188012016228639343L;
+public class SysRolePageDto extends AbstractPageDto {
+    private static final long serialVersionUID = -53205198587203044L;
 
-    public static final SysRole EMPTY = Builder.builder(SysRole::new).build();
+    public static final SysRolePageDto EMPTY = Builder.builder(SysRolePageDto::new).build();
 
     /**
      * 角色编码
@@ -47,29 +47,18 @@ public class SysRole extends AbstractDataEntity {
     @ApiModelProperty(value = "备注信息")
     private String remark;
 
-    /**
-     * 数据状态
-     */
-    @ApiModelProperty(value = "数据状态")
-    private Integer dataStatus;
-
-
-    public SysRole() {
+    public SysRolePageDto() {
     }
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", SysRole.class.getSimpleName() + "[", "]")
-                .add("id=" + id)
+        return new StringJoiner(", ", SysRolePageDto.class.getSimpleName() + "[", "]")
                 .add("roleCode=" + roleCode)
                 .add("roleName=" + roleName)
                 .add("sort=" + sort)
                 .add("remark=" + remark)
-                .add("dataStatus=" + dataStatus)
-                .add("gmtCreate=" + gmtCreate)
-                .add("gmtModify=" + gmtModify)
+                .add("currPage=" + currPage)
+                .add("pageSize=" + pageSize)
                 .toString();
     }
-
 }
-

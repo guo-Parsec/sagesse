@@ -1,27 +1,28 @@
-package org.edu.sagesse.base.core.domain.entity;
+package org.edu.sagesse.base.core.domain.dto.menu;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.edu.sagesse.common.support.helper.Builder;
-import org.edu.sagesse.data.base.domain.entity.AbstractDataEntity;
+import org.edu.sagesse.data.base.domain.dto.AbstractDataDto;
 
 import java.util.StringJoiner;
 
 /**
- * 系统菜单表(SysMenu)实体类
+ * 系统菜单表(SysMenu)新增参数
  *
  * @author guocq
- * @since 2022-11-29 14:31:34
+ * @since 2022-11-29 17:48:47
  */
-@ApiModel(value = "系统菜单表实体类")
+@ApiModel(value = "系统菜单表新增参数")
 @Setter
 @Getter
-public class SysMenu extends AbstractDataEntity {
-    private static final long serialVersionUID = 527902872580510570L;
+public class SysMenuCreateDto extends AbstractDataDto {
+    private static final long serialVersionUID = 460603684125385029L;
 
-    public static final SysMenu EMPTY = Builder.builder(SysMenu::new).build();
+    public static final SysMenuCreateDto EMPTY = Builder.builder(SysMenuCreateDto::new).build();
+
     /**
      * 上级菜单id
      */
@@ -88,12 +89,12 @@ public class SysMenu extends AbstractDataEntity {
     @ApiModelProperty(value = "菜单描述")
     private String remark;
 
-    public SysMenu() {
+    public SysMenuCreateDto() {
     }
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", SysMenu.class.getSimpleName() + "[", "]")
+        return new StringJoiner(", ", SysMenuCreateDto.class.getSimpleName() + "[", "]")
                 .add("id=" + id)
                 .add("parentId=" + parentId)
                 .add("hierarchicalPath=" + hierarchicalPath)
@@ -111,6 +112,4 @@ public class SysMenu extends AbstractDataEntity {
                 .add("gmtModify=" + gmtModify)
                 .toString();
     }
-
 }
-

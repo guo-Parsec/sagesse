@@ -1,28 +1,29 @@
-package org.edu.sagesse.base.core.domain.entity;
+package org.edu.sagesse.base.core.domain.dto.user;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.edu.sagesse.common.support.helper.Builder;
-import org.edu.sagesse.data.base.domain.entity.AbstractDataEntity;
+import org.edu.sagesse.data.base.domain.dto.AbstractPageDto;
 
 import java.time.LocalDate;
 import java.util.StringJoiner;
 
 /**
- * 系统用户表(SysUser)实体类
+ * 系统用户表(SysUser)分页参数
  *
  * @author guocq
- * @since 2022-11-29 13:55:01
+ * @since 2022-11-29 17:56:45
  */
-@ApiModel(value = "系统用户表实体类")
+@ApiModel(value = "系统用户表分页参数")
 @Setter
 @Getter
-public class SysUser extends AbstractDataEntity {
-    private static final long serialVersionUID = -80090163618689183L;
+public class SysUserPageDto extends AbstractPageDto {
+    private static final long serialVersionUID = -26389166103623761L;
 
-    public static final SysUser EMPTY = Builder.builder(SysUser::new).build();
+    public static final SysUserPageDto EMPTY = Builder.builder(SysUserPageDto::new).build();
+
     /**
      * 账户信息
      */
@@ -65,14 +66,12 @@ public class SysUser extends AbstractDataEntity {
     @ApiModelProperty(value = "用户类型")
     private Integer userType;
 
-
-    public SysUser() {
+    public SysUserPageDto() {
     }
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", SysUser.class.getSimpleName() + "[", "]")
-                .add("id=" + id)
+        return new StringJoiner(", ", SysUserPageDto.class.getSimpleName() + "[", "]")
                 .add("account=" + account)
                 .add("password=" + password)
                 .add("nickname=" + nickname)
@@ -80,11 +79,8 @@ public class SysUser extends AbstractDataEntity {
                 .add("avatarUrl=" + avatarUrl)
                 .add("birthday=" + birthday)
                 .add("userType=" + userType)
-                .add("dataStatus=" + dataStatus)
-                .add("gmtCreate=" + gmtCreate)
-                .add("gmtModify=" + gmtModify)
+                .add("currPage=" + currPage)
+                .add("pageSize=" + pageSize)
                 .toString();
     }
-
 }
-

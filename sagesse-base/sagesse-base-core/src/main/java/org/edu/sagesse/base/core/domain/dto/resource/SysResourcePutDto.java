@@ -1,27 +1,27 @@
-package org.edu.sagesse.base.core.domain.entity;
+package org.edu.sagesse.base.core.domain.dto.resource;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.edu.sagesse.common.support.helper.Builder;
-import org.edu.sagesse.data.base.domain.entity.AbstractDataEntity;
+import org.edu.sagesse.data.base.domain.dto.AbstractDataDto;
 
 import java.util.StringJoiner;
 
 /**
- * 系统资源表(SysResource)实体类
+ * 系统资源表(SysResource)更新参数
  *
  * @author guocq
- * @since 2022-11-29 14:22:55
+ * @since 2022-11-29 17:54:48
  */
-@ApiModel(value = "系统资源表实体类")
+@ApiModel(value = "系统资源表更新参数")
 @Setter
 @Getter
-public class SysResource extends AbstractDataEntity {
-    private static final long serialVersionUID = 379563653353540099L;
+public class SysResourcePutDto extends AbstractDataDto {
+    private static final long serialVersionUID = 657210590258345332L;
 
-    public static final SysResource EMPTY = Builder.builder(SysResource::new).build();
+    public static final SysResourcePutDto EMPTY = Builder.builder(SysResourcePutDto::new).build();
 
     /**
      * 分类码
@@ -65,19 +65,12 @@ public class SysResource extends AbstractDataEntity {
     @ApiModelProperty(value = "备注信息")
     private String remark;
 
-    /**
-     * 数据状态
-     */
-    @ApiModelProperty(value = "数据状态")
-    private Integer dataStatus;
-
-
-    public SysResource() {
+    public SysResourcePutDto() {
     }
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", SysResource.class.getSimpleName() + "[", "]")
+        return new StringJoiner(", ", SysResourcePutDto.class.getSimpleName() + "[", "]")
                 .add("id=" + id)
                 .add("categoryCode=" + categoryCode)
                 .add("categoryName=" + categoryName)
@@ -91,6 +84,4 @@ public class SysResource extends AbstractDataEntity {
                 .add("gmtModify=" + gmtModify)
                 .toString();
     }
-
 }
-

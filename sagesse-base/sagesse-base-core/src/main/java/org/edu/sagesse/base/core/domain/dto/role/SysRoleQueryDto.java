@@ -1,27 +1,27 @@
-package org.edu.sagesse.base.core.domain.entity;
+package org.edu.sagesse.base.core.domain.dto.role;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.edu.sagesse.common.support.helper.Builder;
-import org.edu.sagesse.data.base.domain.entity.AbstractDataEntity;
+import org.edu.sagesse.data.base.domain.dto.AbstractDataDto;
 
 import java.util.StringJoiner;
 
 /**
- * 系统角色表(SysRole)实体类
+ * 系统角色表(SysRole)查询参数
  *
  * @author guocq
- * @since 2022-11-29 14:28:09
+ * @since 2022-11-29 17:56:35
  */
-@ApiModel(value = "系统角色表实体类")
+@ApiModel(value = "系统角色表查询参数")
 @Setter
 @Getter
-public class SysRole extends AbstractDataEntity {
-    private static final long serialVersionUID = 188012016228639343L;
+public class SysRoleQueryDto extends AbstractDataDto {
+    private static final long serialVersionUID = -12274691476947105L;
 
-    public static final SysRole EMPTY = Builder.builder(SysRole::new).build();
+    public static final SysRoleQueryDto EMPTY = Builder.builder(SysRoleQueryDto::new).build();
 
     /**
      * 角色编码
@@ -47,19 +47,12 @@ public class SysRole extends AbstractDataEntity {
     @ApiModelProperty(value = "备注信息")
     private String remark;
 
-    /**
-     * 数据状态
-     */
-    @ApiModelProperty(value = "数据状态")
-    private Integer dataStatus;
-
-
-    public SysRole() {
+    public SysRoleQueryDto() {
     }
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", SysRole.class.getSimpleName() + "[", "]")
+        return new StringJoiner(", ", SysRoleQueryDto.class.getSimpleName() + "[", "]")
                 .add("id=" + id)
                 .add("roleCode=" + roleCode)
                 .add("roleName=" + roleName)
@@ -70,6 +63,4 @@ public class SysRole extends AbstractDataEntity {
                 .add("gmtModify=" + gmtModify)
                 .toString();
     }
-
 }
-

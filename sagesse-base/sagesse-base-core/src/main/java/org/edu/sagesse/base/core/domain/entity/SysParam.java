@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+import org.edu.sagesse.common.support.helper.Builder;
 import org.edu.sagesse.data.base.domain.entity.AbstractDataEntity;
 
 import java.util.StringJoiner;
@@ -19,6 +20,8 @@ import java.util.StringJoiner;
 @Getter
 public class SysParam extends AbstractDataEntity {
     private static final long serialVersionUID = 333127581773377747L;
+
+    public static final SysParam EMPTY = Builder.builder(SysParam::new).build();
 
     /**
      * 类别码
