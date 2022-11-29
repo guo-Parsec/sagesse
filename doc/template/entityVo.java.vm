@@ -17,22 +17,28 @@ import org.edu.sagesse.base.api.core.support.context.DictContext;
 import org.edu.sagesse.data.base.domain.vo.AbstractDataVo;
 import org.edu.sagesse.data.base.support.pool.DictPool;
 import java.util.StringJoiner;
+import org.edu.sagesse.common.support.helper.Builder;
 
 ##使用宏定义实现类注释信息
-#tableComment("实体类")
-@ApiModel(value = "$!{tableInfo.comment}实体类")
+#tableComment("展示层数据")
+@ApiModel(value = "$!{tableInfo.comment}展示层数据")
 @Setter
 @Getter
 public class $!{tableInfo.name}Vo extends AbstractDataVo {
     private static final long serialVersionUID = $!tool.serial();
+
+    public static final $!{tableInfo.name}Vo EMPTY = Builder.builder($!{tableInfo.name}Vo::new).build();
+
     #foreach($column in $tableInfo.fullColumn)
-        #if(${column.comment})/**
-         * ${column.comment}
-         */#end
+        #if($column.ext.isSupper)#else
 
-        @ApiModelProperty(value = "${column.comment}")
-        private $!{tool.getClsNameByFullName($column.type)} $!{column.name};
+            #if(${column.comment})/**
+             * ${column.comment}
+             */#end
 
+            @ApiModelProperty(value = "${column.comment}")
+            private $!{tool.getClsNameByFullName($column.type)} $!{column.name};
+        #end
     #end
 
     public $!{tableInfo.name}Vo() {

@@ -25,14 +25,20 @@ import java.util.StringJoiner;
 @Getter
 public class $!{tableInfo.name} extends AbstractDataEntity {
 private static final long serialVersionUID = $!tool.serial();
+
+public static final $!{tableInfo.name} EMPTY = Builder.builder($!{tableInfo.name}::new).build();
+
+
 #foreach($column in $tableInfo.fullColumn)
-    #if(${column.comment})/**
-     * ${column.comment}
-     */#end
+    #if($column.ext.isSupper)#else
 
-@ApiModelProperty(value = "${column.comment}")
-private #if($column.type.equals("java.util.Date"))$!{tool.getClsNameByFullName("java.time.LocalDateTime")}#else$!{tool.getClsNameByFullName($column.type)}#end $!{column.name};
+        #if(${column.comment})/**
+         * ${column.comment}
+         */#end
 
+    @ApiModelProperty(value = "${column.comment}")
+    private #if($column.type.equals("java.util.Date"))$!{tool.getClsNameByFullName("java.time.LocalDateTime")}#else$!{tool.getClsNameByFullName($column.type)}#end $!{column.name};
+    #end
 #end
 
 public $!{tableInfo.name}() {

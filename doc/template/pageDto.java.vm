@@ -1,0 +1,55 @@
+##引入宏定义
+$!{define.vm}
+
+##使用宏定义设置回调（保存位置与文件后缀）
+#save("/domain/dto", "PageDto.java")
+
+##使用宏定义设置包后缀
+#setPackageSuffix("domain.dto")
+
+##使用全局变量实现默认包导入
+$!{autoImport.vm}
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
+import org.edu.sagesse.common.support.helper.Builder;
+import org.edu.sagesse.data.base.domain.dto.AbstractPageDto;
+import java.util.StringJoiner;
+
+#set($name = $!{tableInfo.name}+"PageDto")
+##使用宏定义实现类注释信息
+#tableComment("分页参数")
+@ApiModel(value = "$!{tableInfo.comment}分页参数")
+@Setter
+@Getter
+public class ${name} extends AbstractPageDto {
+private static final long serialVersionUID = $!tool.serial();
+
+public static final ${name} EMPTY = Builder.builder(${name}::new).build();
+#foreach($column in $tableInfo.fullColumn)
+    #if($column.ext.isSupper)#else
+
+        #if(${column.comment})/**
+         * ${column.comment}
+         */#end
+
+    @ApiModelProperty(value = "${column.comment}")
+    private $!{tool.getClsNameByFullName($column.type)} $!{column.name};
+    #end
+#end
+
+public $!{name}() {
+        }
+
+@Override
+public String toString() {
+        return new StringJoiner(", ", $!{name}.class.getSimpleName() + "[", "]")
+    #foreach($column in $tableInfo.fullColumn)#if(!$column.ext.isSupper)
+            .add("$!{column.name}=" + $!{column.name})
+    #end#end
+        .add("currPage=" + currPage)
+        .add("pageSize=" + pageSize)
+        .toString();
+        }
+        }

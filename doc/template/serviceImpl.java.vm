@@ -1,0 +1,82 @@
+##定义初始变量
+#set($tableName = $tool.append($tableInfo.name, "ServiceImpl"))
+##设置回调
+$!callback.setFileName($tool.append($tableName, ".java"))
+$!callback.setSavePath($tool.append($tableInfo.savePath, "/service/impl"))
+
+##拿到主键
+#if(!$tableInfo.pkColumn.isEmpty())
+    #set($pk = $tableInfo.pkColumn.get(0))
+#end
+
+#if($tableInfo.savePackageName)package $!{tableInfo.savePackageName}.#{end}service.impl;
+
+import $!{tableInfo.savePackageName}.entity.$!{tableInfo.name};
+import $!{tableInfo.savePackageName}.dao.$!{tableInfo.name}Dao;
+import $!{tableInfo.savePackageName}.service.$!{tableInfo.name}Service;
+import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+
+import javax.annotation.Resource;
+
+/**
+ * $!{tableInfo.comment}($!{tableInfo.name})表服务实现类
+ *
+ * @author $!author
+ * @since $!time.currTime()
+ */
+@Service(value = "$!tool.firstLowerCase($!{tableInfo.name})Service")
+public class $!{tableName} implements $!{tableInfo.name}Service {
+#set($daoName = $!tool.firstLowerCase($!{tableInfo.name})+"Dao")
+#set($convertName = $!{tableInfo.name}+"Convert")
+#set($voName = $!{tableInfo.name}+"Vo")
+
+@Resource
+private $!{tableInfo.name}Dao ${daoName};
+
+/**
+ * <p>根据主键查询单条数据</p>
+ *
+ * @param id 主键
+ * @return {@link ${voName}}
+ * @author $!author
+ * @since $!time.currTime()
+ */
+@Override
+public ${voName} find(Long id) {
+    $!{tableInfo.name} entityFormDb = ${daoName}.findById(id);
+        return Optional.ofNullable(entityFormDb).map(${convertName}::entityTo${voName}).orElse(${voName}.EMPTY);
+        }
+#set($queryDtoName = $!{tableInfo.name}+"QueryDto")
+
+/**
+ * <p>根据主键查询单条数据</p>
+ *
+ * @param queryDto 查询参数
+ * @return {@link ${voName}}
+ * @author $!author
+ * @since $!time.currTime()
+ */
+@Override
+public ${voName} find(${queryDtoName} queryDto) {
+    $!{tableInfo.name} param = ${convertName}.${queryDtoName}ToEntity(queryDto)
+    $!{tableInfo.name} entityFormDb = ${daoName}.findByParam(param);
+        return Optional.ofNullable(entityFormDb).map(${convertName}::entityTo${voName}).orElse(${voName}.EMPTY);
+        }
+#set($pageDtoName = $!{tableInfo.name}+"PageDto")
+
+/**
+ * <p>根据参数分页查询$!{tableInfo.comment}</p>
+ *
+ * @param pageDto 分页查询参数
+ * @return {@link PageInfo<$!{tableInfo.name}Vo>}
+ * @author $!author
+ * @since $!time.currTime()
+ */
+@Override
+public PageInfo<${voName}> page($!{pageDtoName} pageDto) {
+        return null;
+        }
+        }

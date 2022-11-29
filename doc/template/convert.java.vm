@@ -1,0 +1,137 @@
+##引入宏定义
+$!{define.vm}
+
+##使用宏定义设置回调（保存位置与文件后缀）
+#save("/domain/convert", "Convert.java")
+
+##使用宏定义设置包后缀
+#setPackageSuffix("domain.convert")
+#set($entity = $!{tableInfo.name})
+#set($vo = $!{tableInfo.name} + "Vo")
+#set($createDto = $!{tableInfo.name} + "CreateDto")
+#set($putDto = $!{tableInfo.name} + "PutDto")
+#set($pageDto = $!{tableInfo.name} + "PageDto")
+#set($queryDto = $!{tableInfo.name} + "QueryDto")
+
+##使用全局变量实现默认包导入
+$!{autoImport.vm}
+import $!{tableInfo.savePackageName}.domain.entity.$!{entity};
+import $!{tableInfo.savePackageName}.domain.vo.$!{vo};
+import $!{tableInfo.savePackageName}.domain.dto.$!{createDto};
+import $!{tableInfo.savePackageName}.domain.dto.$!{putDto};
+import $!{tableInfo.savePackageName}.domain.dto.$!{pageDto};
+import $!{tableInfo.savePackageName}.domain.dto.$!{queryDto};
+import org.edu.sagesse.common.support.helper.Builder;
+
+/**
+ * <p>$!{tableInfo.comment}实体转换</p>
+ *
+ * @author $!author
+ * @since $!time.currTime()
+ */
+public class $!{tableInfo.name}Convert {
+    #set($entityName = $!tool.firstLowerCase($!{entity}))
+    #set($createDtoName = $!tool.firstLowerCase($!{createDto}))
+    #set($putDtoName = $!tool.firstLowerCase($!{putDto}))
+    #set($pageDtoName = $!tool.firstLowerCase($!{pageDto}))
+    #set($queryDtoName = $!tool.firstLowerCase($!{queryDto}))
+    /**
+     * <p>{@link $!{entity}}转化为{@link $!{vo}}</p>
+     *
+     * @param ${entityName} 被转换的原数据
+     * @return 转换为{@link $!{vo}}
+     * @author guocq
+     * @date $!time.currTime()
+     */
+    public static $!{tableInfo.name}Vo entityTo$!{tableInfo.name}Vo($!{tableInfo.name} ${entityName}) {
+        if (${entityName} == null) {
+            return $!{vo}.EMPTY;
+        }
+        return Builder.builder($!{vo}::new)
+        #foreach($column in $tableInfo.fullColumn)
+            #set($upColumnName = $!tool.firstUpperCase($!{column.name}))
+            .enhanceWith($!{vo}::set${upColumnName}, ${entityName}::get${upColumnName})
+        #end
+        .build();
+    }
+
+    /**
+     * <p>{@link $!{queryDto}}转化为{@link $!{entity}}</p>
+     *
+     * @param dto 被转换的原数据
+     * @return 转换为{@link $!{entity}}
+     * @author guocq
+     * @date $!time.currTime()
+     */
+    public static $!{entity} $!{queryDtoName}ToEntity($!{queryDto} dto) {
+        if (dto == null) {
+            return $!{entity}.EMPTY;
+        }
+        return Builder.builder($!{entity}::new)
+        #foreach($column in $tableInfo.fullColumn)
+            #set($upColumnName = $!tool.firstUpperCase($!{column.name}))
+            .enhanceWith($!{entity}::set${upColumnName}, dto::get${upColumnName})
+        #end
+        .build();
+    }
+
+    /**
+     * <p>{@link $!{pageDto}}转化为{@link $!{entity}}</p>
+     *
+     * @param dto 被转换的原数据
+     * @return 转换为{@link $!{entity}}
+     * @author guocq
+     * @date $!time.currTime()
+     */
+    public static $!{entity} $!{pageDtoName}ToEntity($!{pageDto} dto) {
+        if (dto == null) {
+            return $!{entity}.EMPTY;
+        }
+        return Builder.builder($!{entity}::new)
+        #foreach($column in $tableInfo.fullColumn)
+            #if(!$column.name.equals("id") && !$column.name.equals("dataStatus") && !$column.name.equals("gmtCreate") && !$column.name.equals("gmtModify"))#set($upColumnName = $!tool.firstUpperCase($!{column.name}))
+                .enhanceWith($!{entity}::set${upColumnName}, dto::get${upColumnName})
+            #end#end
+        .build();
+    }
+
+    /**
+     * <p>{@link $!{createDto}}转化为{@link $!{entity}}</p>
+     *
+     * @param dto 被转换的原数据
+     * @return 转换为{@link $!{entity}}
+     * @author guocq
+     * @date $!time.currTime()
+     */
+    public static $!{entity} $!{createDtoName}ToEntity($!{createDto} dto) {
+        if (dto == null) {
+            return $!{entity}.EMPTY;
+        }
+        return Builder.builder($!{entity}::new)
+        #foreach($column in $tableInfo.fullColumn)
+            #set($upColumnName = $!tool.firstUpperCase($!{column.name}))
+            .enhanceWith($!{entity}::set${upColumnName}, dto::get${upColumnName})
+        #end
+        .build();
+    }
+
+    /**
+     * <p>{@link $!{putDto}}转化为{@link $!{entity}}</p>
+     *
+     * @param dto 被转换的原数据
+     * @return 转换为{@link $!{entity}}
+     * @author guocq
+     * @date $!time.currTime()
+     */
+    public static $!{entity} $!{putDtoName}ToEntity($!{putDto} dto) {
+        if (dto == null) {
+            return $!{entity}.EMPTY;
+        }
+        return Builder.builder($!{entity}::new)
+        #foreach($column in $tableInfo.fullColumn)
+            #set($upColumnName = $!tool.firstUpperCase($!{column.name}))
+            .enhanceWith($!{entity}::set${upColumnName}, dto::get${upColumnName})
+        #end
+        .build();
+    }
+}
