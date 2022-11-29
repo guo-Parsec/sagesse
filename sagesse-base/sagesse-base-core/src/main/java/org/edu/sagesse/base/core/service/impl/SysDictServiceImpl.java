@@ -210,9 +210,19 @@ public class SysDictServiceImpl implements SysDictService {
      */
     @Override
     public boolean remove(Long id, boolean isLogicRemove) {
-        return false;
+        checkBeforeRemove(id);
+        int count = isLogicRemove ? sysDictDao.deleteLogic(id): sysDictDao.deletePhysic(id);
+        return count == 1;
     }
 
+    /**
+     * <p>参数构建</p>
+     *
+     * @param sysDict sysDict
+     * @return org.edu.sagesse.base.core.domain.entity.SysDict
+     * @author hedwing
+     * @since 2022/11/29
+     */
     private SysDict uniqueParamBuild(SysDict sysDict) {
         return Builder.builder(SysDict::new)
                 .enhanceWith(SysDict::setCategoryCode, sysDict::getCategoryCode)
@@ -236,17 +246,35 @@ public class SysDictServiceImpl implements SysDictService {
         }
     }
 
+    /**
+     * <p>更新前校验</p>
+     *
+     * @param sysDict sysDict
+     * @author hedwing
+     * @since 2022/11/29
+     */
     private void checkBeforePut(SysDict sysDict) {
         Long id = sysDict.getId();
-        if (AbstractDataEntity.isNotEmpty(sysDictDao.findById(id))) {
-            LOGGER.error("id={}的字典数据不存在", id);
-            throw new CoreException(CoreRestEnum.DATA_NOT_EXIST);
-        }
+        checkBeforeRemove(id);
         SysDict param = uniqueParamBuild(sysDict);
         long count = sysDictDao.list(param).stream().filter(dict -> !Objects.equals(dict.getId(), id)).count();
         if (count > 0) {
             LOGGER.error("{}的字典数据已存在，不能重复", param);
             throw new CoreException(CoreRestEnum.DATA_EXIST);
+        }
+    }
+
+    /**
+     * <p>删除前校验id是否存在</p>
+     *
+     * @param id id
+     * @author hedwing
+     * @since 2022/11/29
+     */
+    private void checkBeforeRemove(Long id) {
+        if (AbstractDataEntity.isEmpty(sysDictDao.findById(id))) {
+            LOGGER.error("id={}的字典数据不存在", id);
+            throw new CoreException(CoreRestEnum.DATA_NOT_EXIST);
         }
     }
 }
