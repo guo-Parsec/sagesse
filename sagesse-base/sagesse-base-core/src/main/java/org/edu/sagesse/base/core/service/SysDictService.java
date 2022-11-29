@@ -3,10 +3,10 @@ package org.edu.sagesse.base.core.service;
 import com.github.pagehelper.PageInfo;
 import org.edu.sagesse.base.api.core.domain.vo.Dict;
 import org.edu.sagesse.base.api.core.domain.vo.SysDictVo;
-import org.edu.sagesse.base.core.domain.dto.SysDictCreateDto;
-import org.edu.sagesse.base.core.domain.dto.SysDictPageDto;
-import org.edu.sagesse.base.core.domain.dto.SysDictPutDto;
-import org.edu.sagesse.base.core.domain.dto.SysDictQueryDto;
+import org.edu.sagesse.base.core.domain.dto.dict.SysDictCreateDto;
+import org.edu.sagesse.base.core.domain.dto.dict.SysDictPageDto;
+import org.edu.sagesse.base.core.domain.dto.dict.SysDictPutDto;
+import org.edu.sagesse.base.core.domain.dto.dict.SysDictQueryDto;
 import org.edu.sagesse.base.core.domain.entity.SysDict;
 
 import java.util.List;
