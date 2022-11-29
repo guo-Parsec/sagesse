@@ -1,4 +1,4 @@
-package org.edu.sagesse.base.core.domain.dto;
+package org.edu.sagesse.base.core.domain.dto.dict;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

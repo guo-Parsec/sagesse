@@ -1,4 +1,4 @@
-package org.edu.sagesse.base.core.domain.dto;
+package org.edu.sagesse.base.core.domain.dto.dict;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -16,10 +16,10 @@ import java.util.StringJoiner;
  **/
 @Setter
 @Getter
-public class SysDictCreateDto extends AbstractDataDto {
+public class SysDictPutDto extends AbstractDataDto {
     private static final long serialVersionUID = -2262315980125219996L;
 
-    public static final SysDictCreateDto EMPTY = Builder.builder(SysDictCreateDto::new).build();
+    public static final SysDictPutDto EMPTY = Builder.builder(SysDictPutDto::new).build();
 
     /**
      * 类别码
@@ -51,12 +51,12 @@ public class SysDictCreateDto extends AbstractDataDto {
     @ApiModelProperty(value = "排序")
     private Integer sort;
 
-    public SysDictCreateDto() {
+    public SysDictPutDto() {
     }
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", SysDictCreateDto.class.getSimpleName() + "[", "]")
+        return new StringJoiner(", ", SysDictPutDto.class.getSimpleName() + "[", "]")
                 .add("categoryCode='" + categoryCode + "'")
                 .add("categoryName='" + categoryName + "'")
                 .add("dictName='" + dictName + "'")
