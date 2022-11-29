@@ -1,0 +1,125 @@
+    ##引入mybatis支持
+        $!{mybatisSupport.vm}
+
+        ##设置保存名称与保存位置
+        $!callback.setFileName($tool.append($!{tableInfo.name}, "Dao.xml"))
+        $!callback.setSavePath($tool.append($modulePath, "/src/main/resources/mapper"))
+
+        ##拿到主键
+        #if(!$tableInfo.pkColumn.isEmpty())
+            #set($pk = $tableInfo.pkColumn.get(0))
+        #end
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    <mapper namespace="$!{tableInfo.savePackageName}.dao.$!{tableInfo.name}Dao">
+        #set($resultMapName = $!{tableInfo.name}+"ResultMap")
+        <resultMap id="${resultMapName}" type="$!{tableInfo.savePackageName}.domain.entity.$!{tableInfo.name}">
+            <!--@Table $!{tableInfo.obj.name}-->
+            #foreach($column in $tableInfo.fullColumn)
+                <result property="$!column.name" column="$!column.obj.name" jdbcType="$!column.ext.jdbcType"/>
+            #end
+        </resultMap>
+        #set($sqlId = $!{tableInfo.obj.name}+"_columns")
+        #set($simpleName = "")#foreach($str in $!{tableInfo.obj.name.split("_")})#set($simpleName = $simpleName+$str.substring(0,1))#end
+        <sql id="${sqlId}">
+            <!--@sql select -->
+            #foreach($column in $tableInfo.fullColumn)
+                ${simpleName}.$!{column.obj.name}#if($velocityCount != $tableInfo.fullColumn.size()),#end
+
+            #end
+            <!--@sql from $!{tableInfo.obj.name} ${simpleName}-->
+        </sql>
+
+        <!-- 根据主键以及数据状态查询唯一数据 -->
+        <select id="find" resultMap="${resultMapName}">
+            select
+            <include refid="${sqlId}"/>
+            from $!{tableInfo.obj.name} ${simpleName}
+            where ${simpleName}.$!pk.obj.name = #{$!pk.name, jdbcType=BIGINT}
+            <if test="dataStatusSet != null and dataStatusSet.size() != 0">
+                and ${simpleName}.data_status in
+                <foreach collection="dataStatusSet" item="dataStatus" separator="," open="(" close=")">
+                    #{dataStatus,jdbcType=INTEGER}
+                </foreach>
+            </if>
+        </select>
+
+        <!-- 根据条件查询唯一数据 -->
+        <select id="findByParam" resultMap="${resultMapName}">
+            select
+            <include refid="${sqlId}"/>
+            from $!{tableInfo.obj.name} ${simpleName}
+            <where>
+                #foreach($column in $tableInfo.fullColumn)#if($velocityCount == 1)
+                    <if test="queryParam.$!column.name != null#if($column.type.equals("java.lang.String")) and queryParam.$!column.name != ''#end">
+                        ${simpleName}.$!column.obj.name = #{queryParam.$!column.name, jdbcType=#if($!column.type.equals("java.lang.Long"))BIGINT#else$!column.ext.jdbcType#end}
+                    </if>
+                #end
+                    #if($velocityCount != 1)
+                        <if test="queryParam.$!column.name != null#if($column.type.equals("java.lang.String")) and queryParam.$!column.name != ''#end">
+                            and ${simpleName}.$!column.obj.name = #{queryParam.$!column.name, jdbcType=#if($!column.type.equals("java.lang.Long"))BIGINT#else$!column.ext.jdbcType#end}
+                        </if>
+                    #end#end
+            </where>
+            limit 1
+        </select>
+
+        <!-- 根据条件查询数据 -->
+        <select id="list" resultMap="${resultMapName}">
+            select
+            <include refid="${sqlId}"/>
+            from $!{tableInfo.obj.name} ${simpleName}
+            <where>
+                #foreach($column in $tableInfo.fullColumn)#if($velocityCount == 1)
+                    <if test="queryParam.$!column.name != null#if($column.type.equals("java.lang.String")) and queryParam.$!column.name != ''#end">
+                        ${simpleName}.$!column.obj.name = #{queryParam.$!column.name, jdbcType=#if($!column.type.equals("java.lang.Long"))BIGINT#else$!column.ext.jdbcType#end}
+                    </if>
+                #end
+                    #if($velocityCount != 1)
+                        <if test="queryParam.$!column.name != null#if($column.type.equals("java.lang.String")) and queryParam.$!column.name != ''#end">
+                            and ${simpleName}.$!column.obj.name = #{queryParam.$!column.name, jdbcType=#if($!column.type.equals("java.lang.Long"))BIGINT#else$!column.ext.jdbcType#end}
+                        </if>
+                    #end#end
+            </where>
+        </select>
+
+        <!-- 新增数据 -->
+        <insert id="create">
+            insert into $!{tableInfo.obj.name}(#allSqlColumn())
+                values (#foreach($column in $tableInfo.fullColumn)#{$!{column.name}, jdbcType=#if($!column.type.equals("java.lang.Long"))BIGINT#else$!column.ext.jdbcType#end}#if($velocityHasNext), #end#end)
+        </insert>
+
+        <!-- 批量新增数据 -->
+        <insert id="createBatch">
+            insert into $!{tableInfo.obj.name}(#allSqlColumn()) values
+            <foreach collection="list" item="item" separator=",">
+                (#foreach($column in $tableInfo.fullColumn)#{item.$!{column.name}, jdbcType=#if($!column.type.equals("java.lang.Long"))BIGINT#else$!column.ext.jdbcType#end}#if($velocityHasNext), #end#end)
+            </foreach>
+        </insert>
+
+        <!-- 根据主键更新数据 -->
+        <update id="update">
+            update $!{tableInfo.obj.name}
+            <set>
+                #foreach($column in $tableInfo.otherColumn)
+                    <if test="$!column.name != null#if($column.type.equals("java.lang.String")) and $!column.name != ''#end">
+                        $!column.obj.name = #{$!column.name},
+                    </if>
+                #end
+            </set>
+            where $!pk.obj.name = #{$!pk.name, jdbcType=BIGINT}
+        </update>
+
+        <!-- 根据主键逻辑删除数据 -->
+        <update id="deleteLogic">
+            update $!{tableInfo.obj.name} set data_status = cast('${@org.edu.sagesse.data.base.support.pool.DataStatusPool@DELETE}' as int)
+            where $!pk.obj.name = #{$!pk.name, jdbcType=BIGINT}
+        </update>
+
+        <!-- 根据主键物理删除数据 -->
+        <delete id="deletePhysic">
+            delete from $!{tableInfo.obj.name} where $!pk.obj.name = #{$!pk.name, jdbcType=BIGINT}
+        </delete>
+
+    </mapper>

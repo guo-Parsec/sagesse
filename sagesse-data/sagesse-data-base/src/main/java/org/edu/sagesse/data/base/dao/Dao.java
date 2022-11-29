@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Param;
 import org.edu.sagesse.data.base.domain.entity.AbstractDataEntity;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p>数据访问类通用接口</p>
@@ -16,22 +17,24 @@ public interface Dao<E extends AbstractDataEntity> {
     /**
      * <p>根据主键查询唯一数据</p>
      *
-     * @param id id
+     * @param id            id
+     * @param dataStatusSet 数据状态集合
      * @return E
      * @author hedwing
      * @since 2022/11/26
      */
-    E find(@Param("id") Long id);
+    E find(@Param("id") Long id, @Param("dataStatusSet") Set<Integer> dataStatusSet);
 
     /**
      * <p>根据条件查询唯一数据</p>
      *
      * @param queryParam 查询参数
+     * @param dataStatusSet 数据状态集合
      * @return E
      * @author hedwing
      * @since 2022/11/26
      */
-    E find(E queryParam);
+    E findByParam(E queryParam, @Param("dataStatusSet") Set<Integer> dataStatusSet);
 
     /**
      * <p>分页查询数据</p>

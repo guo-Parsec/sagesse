@@ -35,6 +35,7 @@ public class StringUtil extends StringUtils {
 
     /**
      * 从 source 中查询是否包含 target 的元素
+     *
      * @param source source
      * @param target target
      * @return true 包含 false 不包含
@@ -62,12 +63,41 @@ public class StringUtil extends StringUtils {
     }
 
     /**
-    * <p>redis key 合并</p>
-    * @param array 字符数组
-    * @return java.lang.String
-    * @author guocq
-    * @date 2022/11/10 15:12
-    */
+     * <p>转换为String类型， 对象为空时默认为{@link StringUtil#EMPTY}</p>
+     *
+     * @param source 源对象
+     * @return java.lang.String
+     * @author guocq
+     * @date 2022/11/29 8:59
+     */
+    public static <S> String toString(S source) {
+        return toString(source, EMPTY);
+    }
+
+    /**
+     * <p>转换为String类型</p>
+     *
+     * @param source     源对象
+     * @param defaultVal 默认值
+     * @return java.lang.String
+     * @author guocq
+     * @date 2022/11/29 8:57
+     */
+    public static <S> String toString(S source, String defaultVal) {
+        if (source == null) {
+            return defaultVal;
+        }
+        return source.toString();
+    }
+
+    /**
+     * <p>redis key 合并</p>
+     *
+     * @param array 字符数组
+     * @return java.lang.String
+     * @author guocq
+     * @date 2022/11/10 15:12
+     */
     public static String redisKeyJoin(final Object... array) {
         return joinWith(RedisPool.REDIS_KEY_SEPARATOR, array);
     }

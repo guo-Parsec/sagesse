@@ -2,7 +2,7 @@ package org.edu.sagesse.data.base.domain.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.edu.sagesse.data.base.domain.vo.AbstractVo;
+import org.edu.sagesse.data.base.domain.dto.AbstractDataDto;
 import org.edu.sagesse.data.base.support.enums.DataStatus;
 
 import java.time.LocalDateTime;
@@ -43,14 +43,12 @@ public abstract class AbstractDataEntity extends AbstractEntity {
         super(id);
     }
 
-    /**
-     * <p>数据展示层转换</p>
-     *
-     * @return {@link AbstractVo}
-     * @author hedwing
-     * @since 2022/10/22
-     */
-    public abstract AbstractVo toVo();
+    public AbstractDataEntity(AbstractDataDto dto) {
+        this.id = dto.getId();
+        this.dataStatus = dto.getDataStatus();
+        this.gmtCreate = dto.getGmtCreate();
+        this.gmtModify = dto.getGmtModify();
+    }
 
     /**
      * 初始化

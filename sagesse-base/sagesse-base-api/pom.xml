@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>sagesse-base</artifactId>
+        <groupId>org.edu</groupId>
+        <version>1.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>sagesse-base-api</artifactId>
+    <description>基础服务api核心模块 - 向其它微服务提供对外接口</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.edu</groupId>
+            <artifactId>sagesse-data-base</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.edu</groupId>
+            <artifactId>sagesse-data-redis</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.edu</groupId>
+            <artifactId>sagesse-data-cache</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>

@@ -19,6 +19,7 @@
         <module>sagesse-common</module>
         <module>sagesse-data</module>
         <module>sagesse-base</module>
+        <module>sagesse-generate</module>
     </modules>
 
     <properties>
@@ -170,13 +171,7 @@
             <!-- 基础服务api核心模块 -->
             <dependency>
                 <groupId>org.edu</groupId>
-                <artifactId>sagesse-base-api-core</artifactId>
-                <version>${sagesse.version}</version>
-            </dependency>
-            <!-- 基础服务api接口模块 -->
-            <dependency>
-                <groupId>org.edu</groupId>
-                <artifactId>sagesse-base-api-interface</artifactId>
+                <artifactId>sagesse-base-api</artifactId>
                 <version>${sagesse.version}</version>
             </dependency>
         </dependencies>

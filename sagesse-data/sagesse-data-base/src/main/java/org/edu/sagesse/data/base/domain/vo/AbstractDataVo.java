@@ -32,15 +32,6 @@ public abstract class AbstractDataVo extends AbstractVo {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     protected LocalDateTime gmtModify;
 
-    /**
-     * <p>数据状态字典显示名称getter方法</p>
-     *
-     * @return java.lang.String
-     * @author hedwing
-     * @since 2022/10/23
-     */
-    public abstract String getDataStatusName();
-
     @Override
     public AbstractDataVo clone() {
         return (AbstractDataVo) super.clone();

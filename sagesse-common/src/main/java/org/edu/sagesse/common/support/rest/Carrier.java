@@ -2,6 +2,9 @@ package org.edu.sagesse.common.support.rest;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.edu.sagesse.common.support.exception.CoreException;
+import org.edu.sagesse.common.support.logger.SaLogger;
+import org.edu.sagesse.common.support.logger.SaLoggerFactory;
 
 /**
  * <p>结果载体</p>
@@ -10,6 +13,7 @@ import lombok.Setter;
  * @since 2022/11/26
  **/
 public class Carrier<D> {
+    private static final SaLogger LOGGER = SaLoggerFactory.getLogger(Carrier.class);
     /**
      * 信息码
      */
@@ -30,6 +34,9 @@ public class Carrier<D> {
     @Getter
     @Setter
     private D data;
+
+    Carrier() {
+    }
 
     Carrier(int code) {
         this.code = code;
@@ -115,7 +122,7 @@ public class Carrier<D> {
      * 失败返回结果
      *
      * @param restEnum 错误码
-     * @param message      错误信息
+     * @param message  错误信息
      */
     public static <T> Carrier<T> failed(RestEnum restEnum, String message) {
         return new Carrier<T>(restEnum.getCode(), message, null);
@@ -159,6 +166,19 @@ public class Carrier<D> {
      */
     public static <T> Carrier<T> forbidden(T data) {
         return new Carrier<T>(CoreRestEnum.FORBIDDEN, data);
+    }
+
+    public static <T> T getSuccessData(Carrier<T> commonResult) {
+        if (commonResult == null) {
+            LOGGER.error("请求结果集为空，可能为请求错误");
+            throw new RuntimeException("The request result set is empty, possibly a request error");
+        }
+        int resultCode = commonResult.getCode();
+        if (!CoreRestEnum.SUCCESS.getCode().equals(resultCode)) {
+            LOGGER.error("请求信息码为{}，可能为请求失败", resultCode);
+            throw new CoreException(commonResult.getMessage(), resultCode);
+        }
+        return commonResult.getData();
     }
 }
 

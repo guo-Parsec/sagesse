@@ -1,0 +1,127 @@
+##定义初始变量
+#set($tableName = $tool.append($tableInfo.name, "Dao"))
+##设置回调
+$!callback.setFileName($tool.append($tableName, ".java"))
+$!callback.setSavePath($tool.append($tableInfo.savePath, "/dao"))
+
+##拿到主键
+#if(!$tableInfo.pkColumn.isEmpty())
+    #set($pk = $tableInfo.pkColumn.get(0))
+#end
+
+#if($tableInfo.savePackageName)package $!{tableInfo.savePackageName}.#{end}dao;
+
+import $!{tableInfo.savePackageName}.domain.entity.$!{tableInfo.name};
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.data.domain.Pageable;
+import org.apache.ibatis.annotations.Param;
+import org.edu.sagesse.common.support.helper.EnumHelper;
+import org.edu.sagesse.data.base.support.enums.DataStatus;
+import com.github.pagehelper.Page;
+import java.util.List;
+import java.util.Set;
+
+/**
+ * $!{tableInfo.comment}($!{tableInfo.name})Dao
+ *
+ * @author $!author
+ * @since $!time.currTime()
+ */
+@Mapper
+public interface $!{tableName} {
+
+        /**
+         * <p>根据主键以及数据状态查询唯一数据</p>
+         *
+         * @param $!pk.name 主键
+         * @param dataStatusSet 数据状态集合
+         * @return {@link $!{tableInfo.name}}
+         * @author $!author
+         * @since $!time.currTime()
+         */
+    $!{tableInfo.name} find(@Param("$!pk.name") $!pk.shortType $!pk.name, @Param("dataStatusSet") Set<Integer> dataStatusSet);
+
+/**
+ * <p>根据主键查询唯一数据</p>
+ *
+ * @param $!pk.name 主键
+ * @return {@link $!{tableInfo.name}}
+ * @author $!author
+ * @since $!time.currTime()
+ */
+default $!{tableInfo.name} findById(@Param("$!pk.name") $!pk.shortType $!pk.name) {
+        Set<Integer> enableStatus = EnumHelper.getStatusCodeSet(DataStatus.ENABLE);
+        return find($!pk.name, enableStatus);
+        }
+
+        /**
+         * <p>根据条件查询唯一数据</p>
+         *
+         * @param queryParam    查询参数
+         * @return {@link $!{tableInfo.name}}
+         * @author $!author
+         * @since $!time.currTime()
+         */
+    $!{tableInfo.name} findByParam(@Param("queryParam") $!{tableInfo.name} queryParam);
+
+        /**
+         * <p>根据条件查询数据</p>
+         *
+         * @param queryParam    查询参数
+         * @return {@link $!{tableInfo.name}}
+         * @author $!author
+         * @since $!time.currTime()
+         */
+        List<$!{tableInfo.name}> list(@Param("queryParam") $!{tableInfo.name} queryParam);
+
+        /**
+         * <p>新增数据</p>
+         *
+         * @param $!tool.firstLowerCase($!{tableInfo.name}) 数据实体
+         * @return 影响行数
+         * @author $!author
+         * @since $!time.currTime()
+         */
+        int create($!{tableInfo.name} $!tool.firstLowerCase($!{tableInfo.name}));
+
+        /**
+         * <p>批量新增数据</p>
+         *
+         * @param list 数据实体列表
+         * @return 影响行数
+         * @author $!author
+         * @since $!time.currTime()
+         */
+        int createBatch(@Param("list") List<$!{tableInfo.name}> list);
+
+        /**
+         * <p>根据主键更新数据</p>
+         *
+         * @param $!tool.firstLowerCase($!{tableInfo.name}) 更新的数据实体
+         * @return 影响行数
+         * @author $!author
+         * @since $!time.currTime()
+         */
+        int update($!{tableInfo.name} $!tool.firstLowerCase($!{tableInfo.name}));
+
+        /**
+         * <p>根据主键逻辑删除数据</p>
+         *
+         * @param $!pk.name 主键
+         * @return 影响行数
+         * @author $!author
+         * @since $!time.currTime()
+         */
+        int deleteLogic($!pk.shortType $!pk.name);
+
+        /**
+         * <p>根据主键物理删除数据</p>
+         *
+         * @param $!pk.name 主键
+         * @return 影响行数
+         * @author $!author
+         * @since $!time.currTime()
+         */
+        int deletePhysic($!pk.shortType $!pk.name);
+        }

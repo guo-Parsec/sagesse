@@ -1,0 +1,61 @@
+##引入宏定义
+$!{define.vm}
+
+##使用宏定义设置回调（保存位置与文件后缀）
+#save("/domain/vo", "Vo.java")
+
+##使用宏定义设置包后缀
+#setPackageSuffix("domain.vo")
+
+##使用全局变量实现默认包导入
+$!{autoImport.vm}
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
+import org.edu.sagesse.base.api.core.support.context.DictContext;
+import org.edu.sagesse.data.base.domain.vo.AbstractDataVo;
+import org.edu.sagesse.data.base.support.pool.DictPool;
+import java.util.StringJoiner;
+
+##使用宏定义实现类注释信息
+#tableComment("实体类")
+@ApiModel(value = "$!{tableInfo.comment}实体类")
+@Setter
+@Getter
+public class $!{tableInfo.name}Vo extends AbstractDataVo {
+    private static final long serialVersionUID = $!tool.serial();
+    #foreach($column in $tableInfo.fullColumn)
+        #if(${column.comment})/**
+         * ${column.comment}
+         */#end
+
+        @ApiModelProperty(value = "${column.comment}")
+        private $!{tool.getClsNameByFullName($column.type)} $!{column.name};
+
+    #end
+
+    public $!{tableInfo.name}Vo() {
+    }
+
+    /**
+     * <p>数据状态字典显示名称getter方法</p>
+     *
+     * @return java.lang.String
+     * @author $!author
+     * @since $!time.currTime()
+     */
+    @Override
+    public String getDataStatusName() {
+        return DictContext.convert(DictPool.DICT_CATEGORY_DATA_STATUS, this.dataStatus);
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", $!{tableInfo.name}Vo.class.getSimpleName() + "[", "]")
+            #foreach($column in $tableInfo.fullColumn)
+                    .add("$!{column.name}=" + $!{column.name})
+                    #end
+                .toString();
+    }
+}

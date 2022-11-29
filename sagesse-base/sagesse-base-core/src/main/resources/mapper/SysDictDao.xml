@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.edu.sagesse.base.core.dao.SysDictDao">
+    <resultMap id="SysDictResultMap" type="org.edu.sagesse.base.core.domain.entity.SysDict">
+        <!--@Table sys_dict-->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="categoryCode" column="category_code" jdbcType="VARCHAR"/>
+        <result property="categoryName" column="category_name" jdbcType="VARCHAR"/>
+        <result property="dictName" column="dict_name" jdbcType="VARCHAR"/>
+        <result property="dictValue" column="dict_value" jdbcType="VARCHAR"/>
+        <result property="sort" column="sort" jdbcType="INTEGER"/>
+        <result property="dataStatus" column="data_status" jdbcType="INTEGER"/>
+        <result property="gmtCreate" column="gmt_create" jdbcType="TIMESTAMP"/>
+        <result property="gmtModify" column="gmt_modify" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="sys_dict_columns">
+        <!--@sql select -->
+        sd.id,
+        sd.category_code,
+        sd.category_name,
+        sd.dict_name,
+        sd.dict_value,
+        sd.sort,
+        sd.data_status,
+        sd.gmt_create,
+        sd.gmt_modify
+        <!--@sql from sys_dict sd-->
+    </sql>
+
+    <!-- 根据主键以及数据状态查询唯一数据 -->
+    <select id="find" resultMap="SysDictResultMap">
+        select
+        <include refid="sys_dict_columns"/>
+        from sys_dict sd
+        where sd.id = #{id, jdbcType=BIGINT}
+        <if test="dataStatusSet != null and dataStatusSet.size() != 0">
+            and sd.data_status in
+            <foreach collection="dataStatusSet" item="dataStatus" separator="," open="(" close=")">
+                #{dataStatus,jdbcType=INTEGER}
+            </foreach>
+        </if>
+    </select>
+
+    <!-- 根据条件查询唯一数据 -->
+    <select id="findByParam" resultMap="SysDictResultMap">
+        select
+        <include refid="sys_dict_columns"/>
+        from sys_dict sd
+        <where>
+            <if test="queryParam.id != null">
+                sd.id = #{queryParam.id, jdbcType=BIGINT}
+            </if>
+            <if test="queryParam.categoryCode != null and queryParam.categoryCode != ''">
+                and sd.category_code = #{queryParam.categoryCode, jdbcType=VARCHAR}
+            </if>
+            <if test="queryParam.categoryName != null and queryParam.categoryName != ''">
+                and sd.category_name = #{queryParam.categoryName, jdbcType=VARCHAR}
+            </if>
+            <if test="queryParam.dictName != null and queryParam.dictName != ''">
+                and sd.dict_name = #{queryParam.dictName, jdbcType=VARCHAR}
+            </if>
+            <if test="queryParam.dictValue != null and queryParam.dictValue != ''">
+                and sd.dict_value = #{queryParam.dictValue, jdbcType=VARCHAR}
+            </if>
+            <if test="queryParam.sort != null">
+                and sd.sort = #{queryParam.sort, jdbcType=INTEGER}
+            </if>
+            <if test="queryParam.dataStatus != null">
+                and sd.data_status = #{queryParam.dataStatus, jdbcType=INTEGER}
+            </if>
+            <if test="queryParam.gmtCreate != null">
+                and sd.gmt_create = #{queryParam.gmtCreate, jdbcType=TIMESTAMP}
+            </if>
+            <if test="queryParam.gmtModify != null">
+                and sd.gmt_modify = #{queryParam.gmtModify, jdbcType=TIMESTAMP}
+            </if>
+        </where>
+        limit 1
+    </select>
+
+    <!-- 根据条件查询数据 -->
+    <select id="list" resultMap="SysDictResultMap">
+        select
+        <include refid="sys_dict_columns"/>
+        from sys_dict sd
+        <where>
+            <if test="queryParam.id != null">
+                sd.id = #{queryParam.id, jdbcType=BIGINT}
+            </if>
+            <if test="queryParam.categoryCode != null and queryParam.categoryCode != ''">
+                and sd.category_code = #{queryParam.categoryCode, jdbcType=VARCHAR}
+            </if>
+            <if test="queryParam.categoryName != null and queryParam.categoryName != ''">
+                and sd.category_name = #{queryParam.categoryName, jdbcType=VARCHAR}
+            </if>
+            <if test="queryParam.dictName != null and queryParam.dictName != ''">
+                and sd.dict_name = #{queryParam.dictName, jdbcType=VARCHAR}
+            </if>
+            <if test="queryParam.dictValue != null and queryParam.dictValue != ''">
+                and sd.dict_value = #{queryParam.dictValue, jdbcType=VARCHAR}
+            </if>
+            <if test="queryParam.sort != null">
+                and sd.sort = #{queryParam.sort, jdbcType=INTEGER}
+            </if>
+            <if test="queryParam.dataStatus != null">
+                and sd.data_status = #{queryParam.dataStatus, jdbcType=INTEGER}
+            </if>
+            <if test="queryParam.gmtCreate != null">
+                and sd.gmt_create = #{queryParam.gmtCreate, jdbcType=TIMESTAMP}
+            </if>
+            <if test="queryParam.gmtModify != null">
+                and sd.gmt_modify = #{queryParam.gmtModify, jdbcType=TIMESTAMP}
+            </if>
+        </where>
+    </select>
+
+    <!-- 新增数据 -->
+    <insert id="create">
+        insert into sys_dict(id, category_code, category_name, dict_name, dict_value, sort, data_status, gmt_create,
+        gmt_modify)
+        values (#{id, jdbcType=BIGINT}, #{categoryCode, jdbcType=VARCHAR}, #{categoryName, jdbcType=VARCHAR},
+        #{dictName, jdbcType=VARCHAR}, #{dictValue, jdbcType=VARCHAR}, #{sort, jdbcType=INTEGER},
+        #{dataStatus, jdbcType=INTEGER}, #{gmtCreate, jdbcType=TIMESTAMP}, #{gmtModify, jdbcType=TIMESTAMP})
+    </insert>
+
+    <!-- 批量新增数据 -->
+    <insert id="createBatch">
+        insert into sys_dict(id, category_code, category_name, dict_name, dict_value, sort, data_status, gmt_create,
+        gmt_modify) values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.id, jdbcType=BIGINT}, #{item.categoryCode, jdbcType=VARCHAR},
+            #{item.categoryName, jdbcType=VARCHAR}, #{item.dictName, jdbcType=VARCHAR},
+            #{item.dictValue, jdbcType=VARCHAR}, #{item.sort, jdbcType=INTEGER}, #{item.dataStatus, jdbcType=INTEGER},
+            #{item.gmtCreate, jdbcType=TIMESTAMP}, #{item.gmtModify, jdbcType=TIMESTAMP})
+        </foreach>
+    </insert>
+
+    <!-- 根据主键更新数据 -->
+    <update id="update">
+        update sys_dict
+        <set>
+            <if test="categoryCode != null and categoryCode != ''">
+                category_code = #{categoryCode},
+            </if>
+            <if test="categoryName != null and categoryName != ''">
+                category_name = #{categoryName},
+            </if>
+            <if test="dictName != null and dictName != ''">
+                dict_name = #{dictName},
+            </if>
+            <if test="dictValue != null and dictValue != ''">
+                dict_value = #{dictValue},
+            </if>
+            <if test="sort != null">
+                sort = #{sort},
+            </if>
+            <if test="dataStatus != null">
+                data_status = #{dataStatus},
+            </if>
+            <if test="gmtCreate != null">
+                gmt_create = #{gmtCreate},
+            </if>
+            <if test="gmtModify != null">
+                gmt_modify = #{gmtModify},
+            </if>
+        </set>
+        where id = #{id, jdbcType=BIGINT}
+    </update>
+
+    <!-- 根据主键逻辑删除数据 -->
+    <update id="deleteLogic">
+        update sys_dict set data_status = cast('${@org.edu.sagesse.data.base.support.pool.DataStatusPool@DELETE}' as
+        int)
+        where id = #{id, jdbcType=BIGINT}
+    </update>
+
+    <!-- 根据主键物理删除数据 -->
+    <delete id="deletePhysic">
+        delete from sys_dict where id = #{id, jdbcType=BIGINT}
+    </delete>
+</mapper>
+

@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.edu.sagesse.base.core.dao.SysUserDao">
+    <resultMap id="SysUserResultMap" type="org.edu.sagesse.base.core.domain.entity.SysUser">
+        <!--@Table sys_user-->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="account" column="account" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="INTEGER"/>
+        <result property="avatarUrl" column="avatar_url" jdbcType="VARCHAR"/>
+        <result property="birthday" column="birthday" jdbcType="TIMESTAMP"/>
+        <result property="userType" column="user_type" jdbcType="INTEGER"/>
+        <result property="dataStatus" column="data_status" jdbcType="INTEGER"/>
+        <result property="gmtCreate" column="gmt_create" jdbcType="TIMESTAMP"/>
+        <result property="gmtModify" column="gmt_modify" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="sys_user_columns">
+        <!--@sql select -->
+        su.id,
+        su.account,
+        su.password,
+        su.nickname,
+        su.sex,
+        su.avatar_url,
+        su.birthday,
+        su.user_type,
+        su.data_status,
+        su.gmt_create,
+        su.gmt_modify
+        <!--@sql from sys_user su-->
+    </sql>
+
+    <!-- 根据主键以及数据状态查询唯一数据 -->
+    <select id="find" resultMap="SysUserResultMap">
+        select
+        <include refid="sys_user_columns"/>
+        from sys_user su
+        where su.id = #{id, jdbcType=BIGINT}
+        <if test="dataStatusSet != null and dataStatusSet.size() != 0">
+            and su.data_status in
+            <foreach collection="dataStatusSet" item="dataStatus" separator="," open="(" close=")">
+                #{dataStatus,jdbcType=INTEGER}
+            </foreach>
+        </if>
+    </select>
+
+    <!-- 根据条件查询唯一数据 -->
+    <select id="findByParam" resultMap="SysUserResultMap">
+        select
+        <include refid="sys_user_columns"/>
+        from sys_user su
+        <where>
+            <if test="queryParam.id != null">
+                su.id = #{queryParam.id, jdbcType=BIGINT}
+            </if>
+            <if test="queryParam.account != null and queryParam.account != ''">
+                and su.account = #{queryParam.account, jdbcType=VARCHAR}
+            </if>
+            <if test="queryParam.password != null and queryParam.password != ''">
+                and su.password = #{queryParam.password, jdbcType=VARCHAR}
+            </if>
+            <if test="queryParam.nickname != null and queryParam.nickname != ''">
+                and su.nickname = #{queryParam.nickname, jdbcType=VARCHAR}
+            </if>
+            <if test="queryParam.sex != null">
+                and su.sex = #{queryParam.sex, jdbcType=INTEGER}
+            </if>
+            <if test="queryParam.avatarUrl != null and queryParam.avatarUrl != ''">
+                and su.avatar_url = #{queryParam.avatarUrl, jdbcType=VARCHAR}
+            </if>
+            <if test="queryParam.birthday != null">
+                and su.birthday = #{queryParam.birthday, jdbcType=TIMESTAMP}
+            </if>
+            <if test="queryParam.userType != null">
+                and su.user_type = #{queryParam.userType, jdbcType=INTEGER}
+            </if>
+            <if test="queryParam.dataStatus != null">
+                and su.data_status = #{queryParam.dataStatus, jdbcType=INTEGER}
+            </if>
+            <if test="queryParam.gmtCreate != null">
+                and su.gmt_create = #{queryParam.gmtCreate, jdbcType=TIMESTAMP}
+            </if>
+            <if test="queryParam.gmtModify != null">
+                and su.gmt_modify = #{queryParam.gmtModify, jdbcType=TIMESTAMP}
+            </if>
+        </where>
+        limit 1
+    </select>
+
+    <!-- 根据条件查询数据 -->
+    <select id="list" resultMap="SysUserResultMap">
+        select
+        <include refid="sys_user_columns"/>
+        from sys_user su
+        <where>
+            <if test="queryParam.id != null">
+                su.id = #{queryParam.id, jdbcType=BIGINT}
+            </if>
+            <if test="queryParam.account != null and queryParam.account != ''">
+                and su.account = #{queryParam.account, jdbcType=VARCHAR}
+            </if>
+            <if test="queryParam.password != null and queryParam.password != ''">
+                and su.password = #{queryParam.password, jdbcType=VARCHAR}
+            </if>
+            <if test="queryParam.nickname != null and queryParam.nickname != ''">
+                and su.nickname = #{queryParam.nickname, jdbcType=VARCHAR}
+            </if>
+            <if test="queryParam.sex != null">
+                and su.sex = #{queryParam.sex, jdbcType=INTEGER}
+            </if>
+            <if test="queryParam.avatarUrl != null and queryParam.avatarUrl != ''">
+                and su.avatar_url = #{queryParam.avatarUrl, jdbcType=VARCHAR}
+            </if>
+            <if test="queryParam.birthday != null">
+                and su.birthday = #{queryParam.birthday, jdbcType=TIMESTAMP}
+            </if>
+            <if test="queryParam.userType != null">
+                and su.user_type = #{queryParam.userType, jdbcType=INTEGER}
+            </if>
+            <if test="queryParam.dataStatus != null">
+                and su.data_status = #{queryParam.dataStatus, jdbcType=INTEGER}
+            </if>
+            <if test="queryParam.gmtCreate != null">
+                and su.gmt_create = #{queryParam.gmtCreate, jdbcType=TIMESTAMP}
+            </if>
+            <if test="queryParam.gmtModify != null">
+                and su.gmt_modify = #{queryParam.gmtModify, jdbcType=TIMESTAMP}
+            </if>
+        </where>
+    </select>
+
+    <!-- 新增数据 -->
+    <insert id="create">
+        insert into sys_user(id, account, password, nickname, sex, avatar_url, birthday, user_type, data_status,
+        gmt_create, gmt_modify)
+        values (#{id, jdbcType=BIGINT}, #{account, jdbcType=VARCHAR}, #{password, jdbcType=VARCHAR},
+        #{nickname, jdbcType=VARCHAR}, #{sex, jdbcType=INTEGER}, #{avatarUrl, jdbcType=VARCHAR},
+        #{birthday, jdbcType=TIMESTAMP}, #{userType, jdbcType=INTEGER}, #{dataStatus, jdbcType=INTEGER},
+        #{gmtCreate, jdbcType=TIMESTAMP}, #{gmtModify, jdbcType=TIMESTAMP})
+    </insert>
+
+    <!-- 批量新增数据 -->
+    <insert id="createBatch">
+        insert into sys_user(id, account, password, nickname, sex, avatar_url, birthday, user_type, data_status,
+        gmt_create, gmt_modify) values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.id, jdbcType=BIGINT}, #{item.account, jdbcType=VARCHAR}, #{item.password, jdbcType=VARCHAR},
+            #{item.nickname, jdbcType=VARCHAR}, #{item.sex, jdbcType=INTEGER}, #{item.avatarUrl, jdbcType=VARCHAR},
+            #{item.birthday, jdbcType=TIMESTAMP}, #{item.userType, jdbcType=INTEGER},
+            #{item.dataStatus, jdbcType=INTEGER}, #{item.gmtCreate, jdbcType=TIMESTAMP},
+            #{item.gmtModify, jdbcType=TIMESTAMP})
+        </foreach>
+    </insert>
+
+    <!-- 根据主键更新数据 -->
+    <update id="update">
+        update sys_user
+        <set>
+            <if test="account != null and account != ''">
+                account = #{account},
+            </if>
+            <if test="password != null and password != ''">
+                password = #{password},
+            </if>
+            <if test="nickname != null and nickname != ''">
+                nickname = #{nickname},
+            </if>
+            <if test="sex != null">
+                sex = #{sex},
+            </if>
+            <if test="avatarUrl != null and avatarUrl != ''">
+                avatar_url = #{avatarUrl},
+            </if>
+            <if test="birthday != null">
+                birthday = #{birthday},
+            </if>
+            <if test="userType != null">
+                user_type = #{userType},
+            </if>
+            <if test="dataStatus != null">
+                data_status = #{dataStatus},
+            </if>
+            <if test="gmtCreate != null">
+                gmt_create = #{gmtCreate},
+            </if>
+            <if test="gmtModify != null">
+                gmt_modify = #{gmtModify},
+            </if>
+        </set>
+        where id = #{id, jdbcType=BIGINT}
+    </update>
+
+    <!-- 根据主键逻辑删除数据 -->
+    <update id="deleteLogic">
+        update sys_user set data_status = cast('${@org.edu.sagesse.data.base.support.pool.DataStatusPool@DELETE}' as
+        int)
+        where id = #{id, jdbcType=BIGINT}
+    </update>
+
+    <!-- 根据主键物理删除数据 -->
+    <delete id="deletePhysic">
+        delete from sys_user where id = #{id, jdbcType=BIGINT}
+    </delete>
+</mapper>
+

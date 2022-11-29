@@ -13,9 +13,8 @@
     <packaging>pom</packaging>
     <description>业务管理微服务模块 - 提供基础的服务</description>
     <modules>
-        <module>sagesse-base-api-core</module>
-        <module>sagesse-base-api-interface</module>
-        <module>sagesse-base-server-core</module>
+        <module>sagesse-base-api</module>
+        <module>sagesse-base-core</module>
     </modules>
 
     <dependencies>
