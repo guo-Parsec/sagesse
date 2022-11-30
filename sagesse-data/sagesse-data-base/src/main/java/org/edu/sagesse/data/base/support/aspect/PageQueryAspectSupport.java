@@ -7,7 +7,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.edu.sagesse.common.support.logger.SaLogger;
 import org.edu.sagesse.common.support.logger.SaLoggerFactory;
-import org.edu.sagesse.data.base.domain.dto.AbstractPageDto;
+import org.edu.sagesse.data.base.domain.dto.PageableDto;
 import org.edu.sagesse.data.base.support.annotation.crud.PageQuery;
 import org.springframework.stereotype.Component;
 
@@ -34,10 +34,10 @@ public class PageQueryAspectSupport {
     }
 
     private void startPage(Object[] args, String methodName) {
-        AbstractPageDto pageDto = null;
+        PageableDto pageDto = null;
         for (Object arg : args) {
-            if (arg instanceof AbstractPageDto) {
-                pageDto = (AbstractPageDto) arg;
+            if (arg instanceof PageableDto) {
+                pageDto = (PageableDto) arg;
                 break;
             }
         }
