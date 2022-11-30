@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.edu.sagesse.generate.dao.TableInfoDao">
+    <resultMap id="TableInfoResultMap" type="org.edu.sagesse.generate.domain.entity.TableInfo">
+        <result column="TABLE_NAME" property="name" jdbcType="VARCHAR"/>
+        <result column="TABLE_COMMENT" property="comment" jdbcType="BOOLEAN"/>
+    </resultMap>
+
+    <select id="findAllTables" resultMap="TableInfoResultMap">
+        select TABLE_NAME,TABLE_COMMENT
+        from information_schema.TABLES
+        where TABLE_SCHEMA = #{schema,jdbcType=VARCHAR}
+    </select>
+</mapper>

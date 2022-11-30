@@ -1,0 +1,62 @@
+spring:
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML5
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+    cache: false
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1/information_schema?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&allowMultiQueries=true
+    username: sagesse
+    password: sagesse
+    druid:
+      initial-size: 5
+      min-idle: 10
+      max-active: 20
+      web-stat-filter:
+        exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*"
+      stat-view-servlet:
+        login-username: druid
+        login-password: druid
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+  cache:
+    type: redis
+    redis:
+      use-key-prefix: true
+      key-prefix: "sagesse:"
+      time-to-live: 7200000
+      cache-null-values: false
+    cache-names: sagesse
+feign:
+  okhttp:
+    enabled: true
+  client:
+    config:
+      default:
+        connectTimeout: 10000
+        readTimeout: 600000
+        loggerLevel: basic
+mybatis:
+  mapper-locations:
+    - classpath*:mapper/**/*Dao.xml
+  configuration:
+    map-underscore-to-camel-case: true
+sagesse:
+  snowflake:
+    machine-id: 1
+    datacenter-id: 1
+logging:
+  level:
+    org.edu.sagesse: debug
+pagehelper:
+  helperDialect: mysql

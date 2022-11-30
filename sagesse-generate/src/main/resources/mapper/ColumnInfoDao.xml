@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.edu.sagesse.generate.dao.ColumnInfoDao">
+    <resultMap id="ColumnInfoResultMap" type="org.edu.sagesse.generate.domain.entity.ColumnInfo">
+        <result column="COLUMN_NAME" property="name" jdbcType="VARCHAR"/>
+        <result column="DATA_TYPE" property="type" jdbcType="VARCHAR"/>
+        <result column="COLUMN_KEY" property="primary" jdbcType="VARCHAR"/>
+        <result column="COLUMN_COMMENT" property="comment" jdbcType="BOOLEAN"/>
+    </resultMap>
+
+    <select id="findAllColumns" resultMap="ColumnInfoResultMap">
+        select COLUMN_NAME,
+               DATA_TYPE,
+               if(COLUMN_KEY = 'PRI', 1, 0) as COLUMN_KEY,
+               COLUMN_COMMENT
+        from information_schema.COLUMNS
+        where TABLE_NAME = #{table,jdbcType=VARCHAR}
+          and TABLE_SCHEMA = #{schema,jdbcType=VARCHAR}
+    </select>
+</mapper>

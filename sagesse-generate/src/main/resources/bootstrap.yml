@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: sagesse-generate
+  profiles:
+    active: dev

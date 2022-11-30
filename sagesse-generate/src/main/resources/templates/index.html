@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>代码生成器</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="row" style="padding: 20px">
+<!--    <button onclick="/find/all/tables/schema/+'1'"-->
+    <table class="table table-hover">
+        <thead>
+        <tr class="success">
+            <th><input type="checkbox"/></th>
+            <th>表名</th>
+            <th>注释</th>
+        </tr>
+        </thead>
+        <tr th:each="table:${tables}">
+            <td><input type="checkbox" class="check"></td>
+            <td th:text="${table.name}"></td>
+            <td th:text="${table.comment}"></td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+
+</script>
+</body>
+</html>
