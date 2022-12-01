@@ -1,19 +1,17 @@
 package org.edu.sagesse.base.core.domain.convert;
 
 import org.edu.sagesse.base.api.core.domain.vo.Dict;
-import org.edu.sagesse.base.api.core.domain.vo.SysDictVo;
-import org.edu.sagesse.base.core.domain.dto.dict.SysDictCreateDto;
-import org.edu.sagesse.base.core.domain.dto.dict.SysDictPageDto;
-import org.edu.sagesse.base.core.domain.dto.dict.SysDictPutDto;
-import org.edu.sagesse.base.core.domain.dto.dict.SysDictQueryDto;
+import org.edu.sagesse.base.core.domain.dto.SysDictCreateDto;
+import org.edu.sagesse.base.core.domain.dto.SysDictPutDto;
 import org.edu.sagesse.base.core.domain.entity.SysDict;
+import org.edu.sagesse.base.core.domain.vo.SysDictVo;
 import org.edu.sagesse.common.support.helper.Builder;
 
 /**
  * <p>系统字典详情表实体转换</p>
  *
  * @author guocq
- * @since 2022-11-29 14:53:16
+ * @since 2022-12-01 10:30:29
  */
 public class SysDictConvert {
     /**
@@ -22,9 +20,9 @@ public class SysDictConvert {
      * @param sysDict 被转换的原数据
      * @return 转换为{@link SysDictVo}
      * @author guocq
-     * @date 2022/11/29 14:53
+     * @date 2022-12-01 10:30:29
      */
-    public static SysDictVo entityToSysDictVo(SysDict sysDict) {
+    public static SysDictVo convertSysDictToSysDictVo(SysDict sysDict) {
         if (sysDict == null) {
             return SysDictVo.EMPTY;
         }
@@ -42,14 +40,58 @@ public class SysDictConvert {
     }
 
     /**
+     * <p>{@link SysDictCreateDto}转化为{@link SysDict}</p>
+     *
+     * @param sysDictCreateDto 被转换的原数据
+     * @return 转换为{@link SysDict}
+     * @author guocq
+     * @date 2022-12-01 10:30:29
+     */
+    public static SysDict convertSysDictCreateDtoToSysDict(SysDictCreateDto sysDictCreateDto) {
+        if (sysDictCreateDto == null) {
+            return SysDict.EMPTY;
+        }
+        return Builder.builder(SysDict::new)
+                .enhanceWith(SysDict::setCategoryCode, sysDictCreateDto::getCategoryCode)
+                .enhanceWith(SysDict::setCategoryName, sysDictCreateDto::getCategoryName)
+                .enhanceWith(SysDict::setDictName, sysDictCreateDto::getDictName)
+                .enhanceWith(SysDict::setDictValue, sysDictCreateDto::getDictValue)
+                .enhanceWith(SysDict::setSort, sysDictCreateDto::getSort)
+                .build();
+    }
+
+    /**
+     * <p>{@link SysDictPutDto}转化为{@link SysDict}</p>
+     *
+     * @param sysDictPutDto 被转换的原数据
+     * @return 转换为{@link SysDict}
+     * @author guocq
+     * @date 2022-12-01 10:30:29
+     */
+    public static SysDict convertSysDictPutDtoToSysDict(SysDictPutDto sysDictPutDto) {
+        if (sysDictPutDto == null) {
+            return SysDict.EMPTY;
+        }
+        return Builder.builder(SysDict::new)
+                .enhanceWith(SysDict::setId, sysDictPutDto::getId)
+                .enhanceWith(SysDict::setCategoryCode, sysDictPutDto::getCategoryCode)
+                .enhanceWith(SysDict::setCategoryName, sysDictPutDto::getCategoryName)
+                .enhanceWith(SysDict::setDictName, sysDictPutDto::getDictName)
+                .enhanceWith(SysDict::setDictValue, sysDictPutDto::getDictValue)
+                .enhanceWith(SysDict::setSort, sysDictPutDto::getSort)
+                .enhanceWith(SysDict::setDataStatus, sysDictPutDto::getDataStatus)
+                .build();
+    }
+
+    /**
      * <p>{@link SysDict}转化为{@link Dict}</p>
      *
      * @param sysDict 被转换的原数据
-     * @return 转换为{@link Dict}
+     * @return 转换为{@link SysDictVo}
      * @author guocq
-     * @date 2022/11/29 15:00
+     * @date 2022-12-01 10:30:29
      */
-    public static Dict entityToDict(SysDict sysDict) {
+    public static Dict convertSysDictToDict(SysDict sysDict) {
         if (sysDict == null) {
             return Dict.EMPTY;
         }
@@ -58,102 +100,6 @@ public class SysDictConvert {
                 .enhanceWith(Dict::setCategoryName, sysDict::getCategoryName)
                 .enhanceWith(Dict::setDictName, sysDict::getDictName)
                 .enhanceWith(Dict::setDictValue, sysDict::getDictValue)
-                .build();
-    }
-
-    /**
-     * <p>{@link SysDictQueryDto}转化为{@link SysDict}</p>
-     *
-     * @param dto 被转换的原数据
-     * @return 转换为{@link SysDict}
-     * @author guocq
-     * @date 2022/11/29 16:38
-     */
-    public static SysDict sysDictQueryDtoToEntity(SysDictQueryDto dto) {
-        if (dto == null) {
-            return SysDict.EMPTY;
-        }
-        return Builder.builder(SysDict::new)
-                .enhanceWith(SysDict::setId, dto::getId)
-                .enhanceWith(SysDict::setCategoryCode, dto::getCategoryCode)
-                .enhanceWith(SysDict::setCategoryName, dto::getCategoryName)
-                .enhanceWith(SysDict::setDictName, dto::getDictName)
-                .enhanceWith(SysDict::setDictValue, dto::getDictValue)
-                .enhanceWith(SysDict::setSort, dto::getSort)
-                .enhanceWith(SysDict::setDataStatus, dto::getDataStatus)
-                .enhanceWith(SysDict::setGmtCreate, dto::getGmtCreate)
-                .enhanceWith(SysDict::setGmtModify, dto::getGmtModify)
-                .build();
-    }
-
-    /**
-     * <p>{@link SysDictPageDto}转化为{@link SysDict}</p>
-     *
-     * @param dto 被转换的原数据
-     * @return 转换为{@link SysDict}
-     * @author guocq
-     * @date 2022/11/29 16:38
-     */
-    public static SysDict sysDictPageDtoToEntity(SysDictPageDto dto) {
-        if (dto == null) {
-            return SysDict.EMPTY;
-        }
-        return Builder.builder(SysDict::new)
-                .enhanceWith(SysDict::setCategoryCode, dto::getCategoryCode)
-                .enhanceWith(SysDict::setCategoryName, dto::getCategoryName)
-                .enhanceWith(SysDict::setDictName, dto::getDictName)
-                .enhanceWith(SysDict::setDictValue, dto::getDictValue)
-                .enhanceWith(SysDict::setSort, dto::getSort)
-                .build();
-    }
-
-    /**
-     * <p>{@link SysDictCreateDto}转化为{@link SysDict}</p>
-     *
-     * @param dto 被转换的原数据
-     * @return 转换为{@link SysDict}
-     * @author guocq
-     * @date 2022/11/29 16:38
-     */
-    public static SysDict sysDictCreateDtoToEntity(SysDictCreateDto dto) {
-        if (dto == null) {
-            return SysDict.EMPTY;
-        }
-        return Builder.builder(SysDict::new)
-                .enhanceWith(SysDict::setId, dto::getId)
-                .enhanceWith(SysDict::setCategoryCode, dto::getCategoryCode)
-                .enhanceWith(SysDict::setCategoryName, dto::getCategoryName)
-                .enhanceWith(SysDict::setDictName, dto::getDictName)
-                .enhanceWith(SysDict::setDictValue, dto::getDictValue)
-                .enhanceWith(SysDict::setSort, dto::getSort)
-                .enhanceWith(SysDict::setDataStatus, dto::getDataStatus)
-                .enhanceWith(SysDict::setGmtCreate, dto::getGmtCreate)
-                .enhanceWith(SysDict::setGmtModify, dto::getGmtModify)
-                .build();
-    }
-
-    /**
-     * <p>{@link SysDictPutDto}转化为{@link SysDict}</p>
-     *
-     * @param dto 被转换的原数据
-     * @return 转换为{@link SysDict}
-     * @author guocq
-     * @date 2022/11/29 16:38
-     */
-    public static SysDict sysDictPutDtoToEntity(SysDictPutDto dto) {
-        if (dto == null) {
-            return SysDict.EMPTY;
-        }
-        return Builder.builder(SysDict::new)
-                .enhanceWith(SysDict::setId, dto::getId)
-                .enhanceWith(SysDict::setCategoryCode, dto::getCategoryCode)
-                .enhanceWith(SysDict::setCategoryName, dto::getCategoryName)
-                .enhanceWith(SysDict::setDictName, dto::getDictName)
-                .enhanceWith(SysDict::setDictValue, dto::getDictValue)
-                .enhanceWith(SysDict::setSort, dto::getSort)
-                .enhanceWith(SysDict::setDataStatus, dto::getDataStatus)
-                .enhanceWith(SysDict::setGmtCreate, dto::getGmtCreate)
-                .enhanceWith(SysDict::setGmtModify, dto::getGmtModify)
                 .build();
     }
 }

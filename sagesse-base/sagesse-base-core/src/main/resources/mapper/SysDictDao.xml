@@ -48,31 +48,25 @@
         from sys_dict sd
         <where>
             <if test="queryParam.id != null">
-                sd.id = #{queryParam.id, jdbcType=BIGINT}
+                and sd.id = #{queryParam.id, jdbcType=BIGINT}
             </if>
             <if test="queryParam.categoryCode != null and queryParam.categoryCode != ''">
                 and sd.category_code = #{queryParam.categoryCode, jdbcType=VARCHAR}
             </if>
             <if test="queryParam.categoryName != null and queryParam.categoryName != ''">
-                and sd.category_name = #{queryParam.categoryName, jdbcType=VARCHAR}
+                and sd.category_name like concat('%', #{queryParam.categoryName, jdbcType=VARCHAR}, '%')
             </if>
             <if test="queryParam.dictName != null and queryParam.dictName != ''">
-                and sd.dict_name = #{queryParam.dictName, jdbcType=VARCHAR}
+                and sd.dict_name like concat('%', #{queryParam.dictName, jdbcType=VARCHAR}, '%')
             </if>
             <if test="queryParam.dictValue != null and queryParam.dictValue != ''">
                 and sd.dict_value = #{queryParam.dictValue, jdbcType=VARCHAR}
             </if>
-            <if test="queryParam.sort != null">
-                and sd.sort = #{queryParam.sort, jdbcType=INTEGER}
-            </if>
-            <if test="queryParam.dataStatus != null">
-                and sd.data_status = #{queryParam.dataStatus, jdbcType=INTEGER}
-            </if>
-            <if test="queryParam.gmtCreate != null">
-                and sd.gmt_create = #{queryParam.gmtCreate, jdbcType=TIMESTAMP}
-            </if>
-            <if test="queryParam.gmtModify != null">
-                and sd.gmt_modify = #{queryParam.gmtModify, jdbcType=TIMESTAMP}
+            <if test="queryParam.dataStatusSet != null and queryParam.dataStatusSet.size() != 0">
+                and sd.data_status in
+                <foreach collection="queryParam.dataStatusSet" item="dataStatus" separator="," open="(" close=")">
+                    #{dataStatus, jdbcType=INTEGER}
+                </foreach>
             </if>
         </where>
         limit 1
@@ -85,31 +79,25 @@
         from sys_dict sd
         <where>
             <if test="queryParam.id != null">
-                sd.id = #{queryParam.id, jdbcType=BIGINT}
+                and sd.id = #{queryParam.id, jdbcType=BIGINT}
             </if>
             <if test="queryParam.categoryCode != null and queryParam.categoryCode != ''">
                 and sd.category_code = #{queryParam.categoryCode, jdbcType=VARCHAR}
             </if>
             <if test="queryParam.categoryName != null and queryParam.categoryName != ''">
-                and sd.category_name = #{queryParam.categoryName, jdbcType=VARCHAR}
+                and sd.category_name like concat('%', #{queryParam.categoryName, jdbcType=VARCHAR}, '%')
             </if>
             <if test="queryParam.dictName != null and queryParam.dictName != ''">
-                and sd.dict_name = #{queryParam.dictName, jdbcType=VARCHAR}
+                and sd.dict_name like concat('%', #{queryParam.dictName, jdbcType=VARCHAR}, '%')
             </if>
             <if test="queryParam.dictValue != null and queryParam.dictValue != ''">
                 and sd.dict_value = #{queryParam.dictValue, jdbcType=VARCHAR}
             </if>
-            <if test="queryParam.sort != null">
-                and sd.sort = #{queryParam.sort, jdbcType=INTEGER}
-            </if>
-            <if test="queryParam.dataStatus != null">
-                and sd.data_status = #{queryParam.dataStatus, jdbcType=INTEGER}
-            </if>
-            <if test="queryParam.gmtCreate != null">
-                and sd.gmt_create = #{queryParam.gmtCreate, jdbcType=TIMESTAMP}
-            </if>
-            <if test="queryParam.gmtModify != null">
-                and sd.gmt_modify = #{queryParam.gmtModify, jdbcType=TIMESTAMP}
+            <if test="queryParam.dataStatusSet != null and queryParam.dataStatusSet.size() != 0">
+                and sd.data_status in
+                <foreach collection="queryParam.dataStatusSet" item="dataStatus" separator="," open="(" close=")">
+                    #{dataStatus, jdbcType=INTEGER}
+                </foreach>
             </if>
         </where>
     </select>
@@ -168,15 +156,33 @@
     </update>
 
     <!-- 根据主键逻辑删除数据 -->
-    <update id="deleteLogic">
+    <update id="deleteLogic" parameterType="long">
         update sys_dict set data_status = cast('${@org.edu.sagesse.data.base.support.pool.DataStatusPool@DELETE}' as
         int)
         where id = #{id, jdbcType=BIGINT}
     </update>
 
+    <!-- 根据主键列表逻辑删除数据 -->
+    <update id="deleteLogicBatch" parameterType="java.util.Set">
+        update sys_dict set data_status = cast('${@org.edu.sagesse.data.base.support.pool.DataStatusPool@DELETE}' as
+        int)
+        where id in
+        <foreach collection="set" item="id" separator="," open="(" close=")">
+            #{id, jdbcType=BIGINT}
+        </foreach>
+    </update>
+
     <!-- 根据主键物理删除数据 -->
-    <delete id="deletePhysic">
+    <delete id="deletePhysic" parameterType="long">
         delete from sys_dict where id = #{id, jdbcType=BIGINT}
+    </delete>
+
+    <!-- 根据主键列表物理删除数据 -->
+    <delete id="deletePhysicBatch" parameterType="java.util.Set">
+        delete from sys_dict where id in
+        <foreach collection="set" item="id" separator="," open="(" close=")">
+            #{id, jdbcType=BIGINT}
+        </foreach>
     </delete>
 </mapper>
 

@@ -1,27 +1,26 @@
-package org.edu.sagesse.base.core.domain.entity;
-
-import java.time.LocalDateTime;
+package org.edu.sagesse.base.core.domain.vo;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.edu.sagesse.data.base.domain.entity.AbstractDataEntity;
+import org.edu.sagesse.data.base.domain.vo.AbstractDataVo;
 
 import java.util.StringJoiner;
 
 /**
- * <p>系统字典详情表(sys_dict)数据展示层实体信息</p>
+ * <p>系统字典详情表数据展示层实体信息</p>
  *
  * @author guocq
- * @since 2022-12-01 10:29:45
+ * @see org.edu.sagesse.base.core.domain.entity.SysDict
+ * @since 2022-12-01 10:29:53
  */
 @Setter
 @Getter
-public class SysDict extends AbstractDataEntity {
-    private static final long serialVersionUID = -21152201998372737L;
+public class SysDictVo extends AbstractDataVo {
+    private static final long serialVersionUID = -80761627115674031L;
 
-    public static final SysDict EMPTY = new SysDict();
+    public static final SysDictVo EMPTY = new SysDictVo();
 
-    public SysDict() {
+    public SysDictVo() {
     }
 
     /**
@@ -51,7 +50,7 @@ public class SysDict extends AbstractDataEntity {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", SysDict.class.getSimpleName() + "[", "]")
+        return new StringJoiner(", ", SysDictVo.class.getSimpleName() + "[", "]")
                 .add("id=" + id)
                 .add("categoryCode=" + categoryCode)
                 .add("categoryName=" + categoryName)

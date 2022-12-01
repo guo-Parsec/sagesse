@@ -1,28 +1,32 @@
-package org.edu.sagesse.base.core.domain.entity;
-
-import java.time.LocalDateTime;
+package org.edu.sagesse.base.core.domain.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.edu.sagesse.data.base.domain.entity.AbstractDataEntity;
+import org.edu.sagesse.data.base.domain.dto.AbstractDto;
 
 import java.util.StringJoiner;
 
 /**
- * <p>系统字典详情表(sys_dict)数据展示层实体信息</p>
+ * <p>系统字典详情表数据展示层实体信息</p>
  *
  * @author guocq
- * @since 2022-12-01 10:29:45
+ * @see org.edu.sagesse.base.core.domain.entity.SysDict
+ * @since 2022-12-01 10:30:07
  */
 @Setter
 @Getter
-public class SysDict extends AbstractDataEntity {
-    private static final long serialVersionUID = -21152201998372737L;
+public class SysDictPutDto extends AbstractDto {
+    private static final long serialVersionUID = -28450405810109633L;
 
-    public static final SysDict EMPTY = new SysDict();
+    public static final SysDictPutDto EMPTY = new SysDictPutDto();
 
-    public SysDict() {
+    public SysDictPutDto() {
     }
+
+    /**
+     * 主键
+     */
+    private Long id;
 
     /**
      * 类别码
@@ -49,9 +53,14 @@ public class SysDict extends AbstractDataEntity {
      */
     private Integer sort;
 
+    /**
+     * 数据状态
+     */
+    private Integer dataStatus;
+
     @Override
     public String toString() {
-        return new StringJoiner(", ", SysDict.class.getSimpleName() + "[", "]")
+        return new StringJoiner(", ", SysDictPutDto.class.getSimpleName() + "[", "]")
                 .add("id=" + id)
                 .add("categoryCode=" + categoryCode)
                 .add("categoryName=" + categoryName)
@@ -59,8 +68,6 @@ public class SysDict extends AbstractDataEntity {
                 .add("dictValue=" + dictValue)
                 .add("sort=" + sort)
                 .add("dataStatus=" + dataStatus)
-                .add("gmtCreate=" + gmtCreate)
-                .add("gmtModify=" + gmtModify)
                 .toString();
     }
 }
