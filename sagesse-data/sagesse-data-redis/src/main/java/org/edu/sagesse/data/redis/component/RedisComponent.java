@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
- * <p>Redis辅助类</p>
+ * <p>Redis组件</p>
  *
  * @author hedwing
  * @since 2022/11/26

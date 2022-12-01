@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 public class PageQueryAspectSupport {
     private static final SaLogger LOGGER = SaLoggerFactory.getLogger(PageQueryAspectSupport.class);
 
-    @Around("@annotation(pageQuery)")
+    @Around(value = "@annotation(pageQuery)", argNames = "joinPoint, pageQuery")
     public Object doPageQueryAspect(ProceedingJoinPoint joinPoint, PageQuery pageQuery) throws Throwable {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         String methodName = methodSignature.getName();

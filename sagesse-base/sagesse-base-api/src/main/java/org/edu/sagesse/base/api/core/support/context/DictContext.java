@@ -7,11 +7,13 @@ import org.edu.sagesse.common.support.helper.SpringBeanHelper;
 import org.edu.sagesse.common.support.logger.SaLogger;
 import org.edu.sagesse.common.support.logger.SaLoggerFactory;
 import org.edu.sagesse.common.support.rest.Carrier;
+import org.edu.sagesse.common.util.CollectionUtil;
 import org.edu.sagesse.common.util.StringUtil;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * <p>数据字典上下文</p>
@@ -82,6 +84,21 @@ public class DictContext {
             return;
         }
         CATEGORY_DICT_MAPPING.remove(category);
+    }
+
+    /**
+     * <p>清除指定字典类别列表缓存</p>
+     *
+     * @param category 类别码
+     * @author guocq
+     * @date 2022/12/1 17:09
+     */
+    public static void clear(Set<String> category) {
+        if (CollectionUtil.isEmpty(category)) {
+            LOGGER.warn("category={}不能为空", category);
+            return;
+        }
+        category.forEach(DictContext::clear);
     }
 
     /**

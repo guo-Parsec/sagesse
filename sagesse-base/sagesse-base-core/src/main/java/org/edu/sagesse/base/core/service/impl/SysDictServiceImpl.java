@@ -3,6 +3,7 @@ package org.edu.sagesse.base.core.service.impl;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import org.edu.sagesse.base.api.core.domain.vo.Dict;
+import org.edu.sagesse.base.api.core.support.context.DictContext;
 import org.edu.sagesse.base.core.dao.SysDictDao;
 import org.edu.sagesse.base.core.domain.convert.SysDictConvert;
 import org.edu.sagesse.base.core.domain.dto.SysDictCreateDto;
@@ -24,6 +25,9 @@ import org.edu.sagesse.data.base.domain.entity.AbstractDataEntity;
 import org.edu.sagesse.data.base.support.annotation.crud.PageQuery;
 import org.edu.sagesse.data.base.support.enums.DataStatus;
 import org.edu.sagesse.data.base.util.PageUtil;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -53,6 +57,7 @@ public class SysDictServiceImpl implements SysDictService {
      * @date 2022/11/29 9:15
      */
     @Override
+    @Cacheable(cacheNames = "sys:dict:list", key = "'categoryCode:'+#categoryCode")
     public List<Dict> findDictName(String categoryCode) {
         SysDictQueryDto param = Builder.builder(SysDictQueryDto::new)
                 .with(StringUtil.isBlank(categoryCode), SysDictQueryDto::setCategoryCode, categoryCode)
@@ -76,6 +81,7 @@ public class SysDictServiceImpl implements SysDictService {
      * @date 2022/11/28 16:06
      */
     @Override
+    @Cacheable(cacheNames = "sys:dict:list", key = "'categoryCode:'+#categoryCode+':dictValue:'+#dictValue")
     public List<SysDictVo> findByCategoryCodeAndDictValue(String categoryCode, String dictValue) {
         SysDictQueryDto param = Builder.builder(SysDictQueryDto::new)
                 .with(SysDictQueryDto::setCategoryCode, categoryCode)
@@ -99,6 +105,7 @@ public class SysDictServiceImpl implements SysDictService {
      * @since 2022-12-01 10:30:28
      */
     @Override
+    @Cacheable(cacheNames = "sys:dict:single", key = "'id:'+#id")
     public SysDictVo find(Long id) {
         LOGGER.debug("根据id={}查询单条数据", id);
         SysDict sysDict = sysDictDao.findById(id);
@@ -114,6 +121,7 @@ public class SysDictServiceImpl implements SysDictService {
      * @since 2022-12-01 10:30:28
      */
     @Override
+    @Cacheable(cacheNames = "sys:dict:single", keyGenerator = "dtoKeyGenerator")
     public SysDictVo find(SysDictQueryDto dto) {
         LOGGER.debug("根据参数={}查询单条数据", dto);
         SysDict sysDict = sysDictDao.findByParam(dto);
@@ -129,6 +137,7 @@ public class SysDictServiceImpl implements SysDictService {
      * @since 2022-12-01 10:30:28
      */
     @Override
+    @Cacheable(cacheNames = "sys:dict:list", keyGenerator = "dtoKeyGenerator")
     public List<SysDictVo> list(SysDictQueryDto dto) {
         LOGGER.debug("根据参数={}查询数据列表", dto);
         List<SysDict> sysDictList = sysDictDao.list(dto);
@@ -161,10 +170,13 @@ public class SysDictServiceImpl implements SysDictService {
      * @since 2022-12-01 10:30:28
      */
     @Override
+    @Caching(evict = @CacheEvict(cacheNames = {"sys:dict:single", "sys:dict:list"}, allEntries = true),
+            cacheable = @Cacheable(cacheNames = "sys:dict:single", keyGenerator = "dtoKeyGenerator"))
     public boolean create(SysDictCreateDto dto) {
         LOGGER.debug("根据参数={}新增单条数据", dto);
         SysDict sysDict = SysDictConvert.convertSysDictCreateDtoToSysDict(dto);
         checkBeforeCreate(sysDict);
+        DictContext.clear(sysDict.getCategoryCode());
         return sysDictDao.create(sysDict) == 1;
     }
 
@@ -177,11 +189,13 @@ public class SysDictServiceImpl implements SysDictService {
      * @since 2022-12-01 10:30:28
      */
     @Override
+    @CacheEvict(cacheNames = {"sys:dict:single", "sys:dict:list"}, allEntries = true)
     public boolean create(List<SysDictCreateDto> list) {
         List<SysDict> sysDictList = list.stream()
                 .map(SysDictConvert::convertSysDictCreateDtoToSysDict)
                 .peek(this::checkBeforeCreate)
                 .collect(Collectors.toList());
+        DictContext.clear(sysDictList.stream().map(SysDict::getCategoryCode).collect(Collectors.toSet()));
         return sysDictList.size() == sysDictDao.createBatch(sysDictList);
     }
 
@@ -194,6 +208,7 @@ public class SysDictServiceImpl implements SysDictService {
      * @since 2022-12-01 10:30:28
      */
     @Override
+    @CacheEvict(cacheNames = {"sys:dict:single", "sys:dict:list"}, allEntries = true)
     public boolean put(SysDictPutDto dto) {
         SysDict sysDict = SysDictConvert.convertSysDictPutDtoToSysDict(dto);
         checkBeforePut(sysDict);
@@ -210,6 +225,7 @@ public class SysDictServiceImpl implements SysDictService {
      * @since 2022-12-01 10:30:28
      */
     @Override
+    @CacheEvict(cacheNames = {"sys:dict:single", "sys:dict:list"}, allEntries = true)
     public boolean remove(Long id, boolean isLogic) {
         checkBeforeRemove(id);
         int count = isLogic ? sysDictDao.deleteLogic(id) : sysDictDao.deletePhysic(id);
@@ -226,6 +242,7 @@ public class SysDictServiceImpl implements SysDictService {
      * @since 2022-12-01 10:30:28
      */
     @Override
+    @CacheEvict(cacheNames = {"sys:dict:single", "sys:dict:list"}, allEntries = true)
     public boolean remove(Set<Long> idSet, boolean isLogic) {
         idSet.forEach(this::checkBeforeRemove);
         int count = isLogic ? sysDictDao.deleteLogicBatch(idSet) : sysDictDao.deletePhysicBatch(idSet);
@@ -289,9 +306,11 @@ public class SysDictServiceImpl implements SysDictService {
      * @since 2022-12-01 10:30:28
      */
     private void checkBeforeRemove(Long id) {
-        if (AbstractDataEntity.isEmpty(sysDictDao.findById(id))) {
+        SysDict sysDict = sysDictDao.findById(id);
+        if (AbstractDataEntity.isEmpty(sysDict)) {
             LOGGER.error("id={}的数据不存在", id);
             throw new CoreException(CoreRestEnum.DATA_NOT_EXIST);
         }
+        DictContext.clear(sysDict.getCategoryCode());
     }
 }

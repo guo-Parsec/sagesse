@@ -19,5 +19,15 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
+        <!-- 数据redis模块 -->
+        <dependency>
+            <groupId>org.edu</groupId>
+            <artifactId>sagesse-data-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.edu</groupId>
+            <artifactId>sagesse-data-base</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

@@ -2,7 +2,9 @@ package org.edu.sagesse.base.core.domain.vo;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.edu.sagesse.base.api.core.support.context.DictContext;
 import org.edu.sagesse.data.base.domain.vo.AbstractDataVo;
+import org.edu.sagesse.data.base.support.pool.DictPool;
 
 import java.util.StringJoiner;
 
@@ -47,6 +49,11 @@ public class SysDictVo extends AbstractDataVo {
      * 排序
      */
     private Integer sort;
+
+    @Override
+    public String getDataStatusName() {
+        return DictContext.convert(DictPool.DICT_CATEGORY_DATA_STATUS, this.dictValue);
+    }
 
     @Override
     public String toString() {

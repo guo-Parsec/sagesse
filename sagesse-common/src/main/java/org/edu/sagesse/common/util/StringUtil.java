@@ -1,7 +1,6 @@
 package org.edu.sagesse.common.util;
 
 import org.apache.commons.lang3.StringUtils;
-import org.edu.sagesse.common.support.pool.RedisPool;
 import org.springframework.util.AntPathMatcher;
 
 import java.util.Collection;
@@ -88,17 +87,5 @@ public class StringUtil extends StringUtils {
             return defaultVal;
         }
         return source.toString();
-    }
-
-    /**
-     * <p>redis key 合并</p>
-     *
-     * @param array 字符数组
-     * @return java.lang.String
-     * @author guocq
-     * @date 2022/11/10 15:12
-     */
-    public static String redisKeyJoin(final Object... array) {
-        return joinWith(RedisPool.REDIS_KEY_SEPARATOR, array);
     }
 }
