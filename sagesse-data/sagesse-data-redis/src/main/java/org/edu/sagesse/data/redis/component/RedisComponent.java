@@ -1,4 +1,4 @@
-package org.edu.sagesse.data.redis.support.helper;
+package org.edu.sagesse.data.redis.component;
 
 import com.google.common.collect.Lists;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -17,10 +17,10 @@ import java.util.stream.Collectors;
  * @since 2022/11/26
  **/
 @Component
-public class RedisHelper {
+public class RedisComponent {
     private final RedisTemplate<String, Object> redisTemplate;
 
-    public RedisHelper(RedisTemplate<String, Object> redisTemplate) {
+    public RedisComponent(RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
